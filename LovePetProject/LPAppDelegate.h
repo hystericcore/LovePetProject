@@ -11,5 +11,4 @@
 @interface LPAppDelegate : UIResponder <UIApplicationDelegate>
 @property (strong, nonatomic) UIWindow *window;
 @property (strong, nonatomic) UIViewController *viewController;
-- (void)openSession:(BOOL)allowLoginUI;
 @end
