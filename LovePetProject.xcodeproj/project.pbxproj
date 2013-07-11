@@ -48,7 +48,6 @@
 		FB9AE91F1788ACDD0071DA68 /* baas.io.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FB9AE91E1788ACDD0071DA68 /* baas.io.framework */; };
 		FB9AE9211788BC6C0071DA68 /* icon-512.png in Resources */ = {isa = PBXBuildFile; fileRef = FB9AE9201788BC6C0071DA68 /* icon-512.png */; };
 		FB9AE9231788BC9D0071DA68 /* icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FB9AE9221788BC9D0071DA68 /* icon@2x.png */; };
-		FB9C42EE1788C2420094505E /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FB9C42ED1788C2420094505E /* FacebookSDK.framework */; };
 		FB9C42F01788C2B20094505E /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FB9C42EF1788C2B20094505E /* AdSupport.framework */; };
 		FB9C42F21788C2B90094505E /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FB9C42F11788C2B90094505E /* Accounts.framework */; };
 		FB9C42F41788C8F90094505E /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FB9C42F31788C8F90094505E /* Social.framework */; };
@@ -122,7 +121,6 @@
 		FB9AE91E1788ACDD0071DA68 /* baas.io.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = baas.io.framework; sourceTree = "<group>"; };
 		FB9AE9201788BC6C0071DA68 /* icon-512.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-512.png"; sourceTree = "<group>"; };
 		FB9AE9221788BC9D0071DA68 /* icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon@2x.png"; sourceTree = "<group>"; };
-		FB9C42ED1788C2420094505E /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FacebookSDK.framework; path = ../../../Documents/FacebookSDK/FacebookSDK.framework; sourceTree = "<group>"; };
 		FB9C42EF1788C2B20094505E /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
 		FB9C42F11788C2B90094505E /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
 		FB9C42F31788C8F90094505E /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
@@ -152,7 +150,6 @@
 				FB9C42F41788C8F90094505E /* Social.framework in Frameworks */,
 				FB9C42F21788C2B90094505E /* Accounts.framework in Frameworks */,
 				FB9C42F01788C2B20094505E /* AdSupport.framework in Frameworks */,
-				FB9C42EE1788C2420094505E /* FacebookSDK.framework in Frameworks */,
 				FB9AE91F1788ACDD0071DA68 /* baas.io.framework in Frameworks */,
 				FB8CD9791787D06500D2ED21 /* libxml2.2.dylib in Frameworks */,
 				FBC9743F1787CF2300915EB5 /* UIKit.framework in Frameworks */,
@@ -365,7 +362,6 @@
 				FB9C42F31788C8F90094505E /* Social.framework */,
 				FB9C42F11788C2B90094505E /* Accounts.framework */,
 				FB9C42EF1788C2B20094505E /* AdSupport.framework */,
-				FB9C42ED1788C2420094505E /* FacebookSDK.framework */,
 				FB9C42F71788CC7D0094505E /* FacebookSDKResources.bundle */,
 				FB9AE91E1788ACDD0071DA68 /* baas.io.framework */,
 				FB8CD9781787D06500D2ED21 /* libxml2.2.dylib */,
