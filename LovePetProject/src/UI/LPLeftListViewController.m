@@ -10,15 +10,6 @@
 
 @implementation LPLeftListViewController
 
-- (id)init
-{
-    self = [super initWithNibName:nil bundle:nil];
-    if (self) {
-        
-    }
-    return self;
-}
-
 - (void)dealloc
 {
     self.listDataArray = nil;

@@ -8,7 +8,8 @@
 
 #import "TMQuiltViewController.h"
 
-@interface LPPetQuiltViewController : TMQuiltViewController
+@interface LPPetQuiltViewController : TMQuiltViewController <UIActionSheetDelegate>
+@property (nonatomic, strong) UIBarButtonItem *searchButton;
 @property (nonatomic, retain) NSMutableArray *prePetQuilts;
 @property (nonatomic, retain) NSArray *petQuilts;
 @end

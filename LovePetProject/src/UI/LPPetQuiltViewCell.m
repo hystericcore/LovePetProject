@@ -33,7 +33,6 @@ const CGFloat kLPPetQuiltViewDayPoint = 10;
         [self createTypeLabel];
         [self createDayLabel];
         [self createDetailLabel];
-        
     }
     return self;
 }
@@ -47,18 +46,6 @@ const CGFloat kLPPetQuiltViewDayPoint = 10;
     self.detailLabel = nil;
     
     [super dealloc];
-}
-
-- (void)willMoveToSuperview:(UIView *)newSuperview
-{
-    [self.photoView setAlpha:0.0];
-}
-
-- (void)didMoveToSuperview
-{
-    [UIView animateWithDuration:0.5f animations:^{
-        [self.photoView setAlpha:1.0f];
-    }];
 }
 
 - (void)createPhotoView

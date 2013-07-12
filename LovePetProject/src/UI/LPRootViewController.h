@@ -12,7 +12,6 @@
 @interface LPRootViewController : UIViewController <LPLeftListViewControllerDelegate>
 // Left list
 @property (nonatomic, strong) LPLeftListViewController *leftListViewController;
-
 // Main navigation controller
 @property (nonatomic, strong) UINavigationController *navController;
 @property (nonatomic, strong) UIBarButtonItem *leftListButton;

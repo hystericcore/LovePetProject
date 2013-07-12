@@ -7,25 +7,14 @@
 //
 
 #import "LPRootViewController.h"
-#import "LPLeftListViewController.h"
 #import "LPPetQuiltViewController.h"
 #import "LPLoginViewController.h"
 
 @implementation LPRootViewController
 
-- (id)init
-{
-    self = [super initWithNibName:nil bundle:nil];
-    if (self) {
-        
-    }
-    return self;
-}
-
 - (void)dealloc
 {
     self.leftListViewController = nil;
-    
     self.navController = nil;
     self.leftListButton = nil;
     
@@ -43,14 +32,7 @@
     [self changeNavRootViewController:[self createPetListController]];
 }
 
-- (void)actionListButton:(UIBarButtonItem *)button
-{
-    if (CGRectGetMinX(_navController.view.frame) == 0) {
-        [self showLeftList:YES];
-    } else {
-        [self showLeftList:NO];
-    }
-}
+#pragma mark - Create Subviews
 
 - (void)createLeftListView
 {
@@ -63,64 +45,10 @@
 
 - (void)createMainNavController
 {
-    UIImage *i1 = [[UIImage imageNamed:@"back_button_background.png"]
-                   resizableImageWithCapInsets:UIEdgeInsetsMake(0, 18, 0, 6)];
-    UIImage *i2 = [[UIImage imageNamed:@"back_button_landscape_background.png"]
-                   resizableImageWithCapInsets:UIEdgeInsetsMake(0, 18, 0, 6)];
-    UIImage *i3 = [[UIImage imageNamed:@"back_button_selected_background.png"]
-                   resizableImageWithCapInsets:UIEdgeInsetsMake(0, 18, 0, 6)];
-    UIImage *i4 = [[UIImage imageNamed:@"back_button_landscape_selected_background.png"]
-                   resizableImageWithCapInsets:UIEdgeInsetsMake(0, 18, 0, 6)];
-    
-    [[UIBarButtonItem appearance] setBackButtonBackgroundImage:i1
-                                                      forState:UIControlStateNormal
-                                                    barMetrics:UIBarMetricsDefault];
-    [[UIBarButtonItem appearance] setTintColor:RGB(64, 64, 64)];
-    
-    [[UIBarButtonItem appearance] setBackButtonBackgroundImage:i2
-                                                      forState:UIControlStateNormal
-                                                    barMetrics:UIBarMetricsLandscapePhone];
-    
-    [[UIBarButtonItem appearance] setBackButtonBackgroundImage:i3
-                                                      forState:UIControlStateHighlighted
-                                                    barMetrics:UIBarMetricsDefault];
-    
-    [[UIBarButtonItem appearance] setBackButtonBackgroundImage:i4
-                                                      forState:UIControlStateHighlighted
-                                                    barMetrics:UIBarMetricsLandscapePhone];
-    [[UIBarButtonItem appearance]
-     setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
-                             RGB(64, 64, 64), UITextAttributeTextColor,
-                             RGB(250, 250, 250), UITextAttributeTextShadowColor,
-                             [NSValue valueWithUIOffset:UIOffsetMake(0, -1)], UITextAttributeTextShadowOffset,
-                             nil]
-     forState:UIControlStateNormal];
-    [[UIBarButtonItem appearance]
-     setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
-                             RGB(240, 240, 240), UITextAttributeTextColor,
-                             RGB(32, 32, 32), UITextAttributeTextShadowColor,
-                             [NSValue valueWithUIOffset:UIOffsetMake(0, -1)], UITextAttributeTextShadowOffset,
-                             nil]
-     forState:UIControlStateSelected];
-    [[UIBarButtonItem appearance]
-     setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
-                             RGB(240, 240, 240), UITextAttributeTextColor,
-                             RGB(32, 32, 32), UITextAttributeTextShadowColor,
-                             [NSValue valueWithUIOffset:UIOffsetMake(0, -1)], UITextAttributeTextShadowOffset,
-                             nil]
-     forState:UIControlStateHighlighted];
-    [[UIBarButtonItem appearance]
-     setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
-                             RGB(176, 176, 176), UITextAttributeTextColor,
-                             RGB(250, 250, 250), UITextAttributeTextShadowColor,
-                             [NSValue valueWithUIOffset:UIOffsetMake(0, -1)], UITextAttributeTextShadowOffset,
-                             nil]
-     forState:UIControlStateDisabled];
-    
     [[UINavigationBar appearance] setBackgroundImage:[UIImage imageNamed:@"navbar_background.png"]
                                        forBarMetrics:UIBarMetricsDefault];
     
-    self.navController = [[UINavigationController alloc] init];
+    self.navController = [[[UINavigationController alloc] init] autorelease];
     [_navController.view setFrame:self.view.bounds];
     [_navController.view.layer setMasksToBounds:NO];
     [_navController.view.layer setShadowRadius:5];
@@ -132,12 +60,21 @@
 - (void)createLeftListButton
 {
     UIButton *listButton = [[UIButton alloc] init];
-    [listButton setImage:[UIImage imageNamed:@"nav_button_list@2x"] forState:UIControlStateNormal];
+    [listButton setImage:[UIImage imageNamed:@"nav_button_list.png"] forState:UIControlStateNormal];
     [listButton addTarget:self action:@selector(actionListButton:) forControlEvents:UIControlEventTouchUpInside];
     [listButton sizeToFit];
     
     self.leftListButton = [[[UIBarButtonItem alloc] initWithCustomView:listButton] autorelease];
     [listButton release];
+}
+
+- (void)actionListButton:(UIBarButtonItem *)button
+{
+    if (CGRectGetMinX(_navController.view.frame) == 0) {
+        [self showLeftList:YES];
+    } else {
+        [self showLeftList:NO];
+    }
 }
 
 - (UIViewController *)createPetListController

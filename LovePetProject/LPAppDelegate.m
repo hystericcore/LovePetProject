@@ -21,9 +21,6 @@
     self.viewController = [[[LPRootViewController alloc] init] autorelease];
     self.window.rootViewController = self.viewController;
     [self.window makeKeyAndVisible];
-    
-//    NSLog(@"Available fonts : %@", [UIFont familyNames]);
-    
     return YES;
 }
 
@@ -33,6 +30,13 @@
     self.window = nil;
     
     [super dealloc];
+}
+
+#pragma mark - Temporary Methods
+
+- (void)printAvailableFont
+{
+    NSLog(@"Available fonts : %@", [UIFont familyNames]);
 }
 
 @end

@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D9DE1C63178EFE8C00ADDC10 /* nav_button_list.png in Resources */ = {isa = PBXBuildFile; fileRef = D9DE1C62178EFE8C00ADDC10 /* nav_button_list.png */; };
+		D9DE1C66178F048100ADDC10 /* nav_button_search.png in Resources */ = {isa = PBXBuildFile; fileRef = D9DE1C64178F048100ADDC10 /* nav_button_search.png */; };
+		D9DE1C67178F048100ADDC10 /* nav_button_search@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D9DE1C65178F048100ADDC10 /* nav_button_search@2x.png */; };
 		FB8CD9771787CFFB00D2ED21 /* LPRootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FB8CD9731787CFFB00D2ED21 /* LPRootViewController.m */; };
 		FB8CD9791787D06500D2ED21 /* libxml2.2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = FB8CD9781787D06500D2ED21 /* libxml2.2.dylib */; };
 		FB8CD97D1787D75700D2ED21 /* LPLeftListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FB8CD97C1787D75700D2ED21 /* LPLeftListViewController.m */; };
@@ -65,6 +68,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		D9DE1C62178EFE8C00ADDC10 /* nav_button_list.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = nav_button_list.png; sourceTree = "<group>"; };
+		D9DE1C64178F048100ADDC10 /* nav_button_search.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = nav_button_search.png; sourceTree = "<group>"; };
+		D9DE1C65178F048100ADDC10 /* nav_button_search@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "nav_button_search@2x.png"; sourceTree = "<group>"; };
 		FB8CD9721787CFFB00D2ED21 /* LPRootViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LPRootViewController.h; sourceTree = "<group>"; };
 		FB8CD9731787CFFB00D2ED21 /* LPRootViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPRootViewController.m; sourceTree = "<group>"; };
 		FB8CD9781787D06500D2ED21 /* libxml2.2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.2.dylib; path = usr/lib/libxml2.2.dylib; sourceTree = SDKROOT; };
@@ -278,7 +284,10 @@
 				FB8CD9D71787FFF400D2ED21 /* navbar_lovepet@2x.png */,
 				FB8CD9CC1787F65D00D2ED21 /* navbar_background.png */,
 				FB8CD9CD1787F65D00D2ED21 /* navbar_background@2x.png */,
+				D9DE1C62178EFE8C00ADDC10 /* nav_button_list.png */,
 				FB9AE8FF17889BEA0071DA68 /* nav_button_list@2x.png */,
+				D9DE1C64178F048100ADDC10 /* nav_button_search.png */,
+				D9DE1C65178F048100ADDC10 /* nav_button_search@2x.png */,
 				FB9AE9161788A5290071DA68 /* nav_button_sendto.png */,
 				FB9AE9171788A5290071DA68 /* nav_button_sendto@2x.png */,
 				FB9AE90E1788A3520071DA68 /* back_button_background.png */,
@@ -477,10 +486,13 @@
 				FB8CD9BB1787EBD300D2ED21 /* 6.jpeg in Resources */,
 				FB8CD9B81787EBD300D2ED21 /* 3.jpeg in Resources */,
 				FBC974551787CF2400915EB5 /* Default-568h@2x.png in Resources */,
+				D9DE1C67178F048100ADDC10 /* nav_button_search@2x.png in Resources */,
 				FB8CD9B91787EBD300D2ED21 /* 4.jpeg in Resources */,
+				D9DE1C63178EFE8C00ADDC10 /* nav_button_list.png in Resources */,
 				FB8CD9B71787EBD300D2ED21 /* 2.jpeg in Resources */,
 				FB9AE9211788BC6C0071DA68 /* icon-512.png in Resources */,
 				FB8CD9D81787FFF400D2ED21 /* navbar_lovepet.png in Resources */,
+				D9DE1C66178F048100ADDC10 /* nav_button_search.png in Resources */,
 				FB8CD9BE1787EBD300D2ED21 /* 9.jpeg in Resources */,
 				FB9AE9231788BC9D0071DA68 /* icon@2x.png in Resources */,
 			);

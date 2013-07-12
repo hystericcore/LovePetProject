@@ -47,7 +47,27 @@ const NSString *kLPPetQueryURL = @"/portal_rnl/abandonment/protection_list.jsp";
     [super viewDidLoad];
     
     [self.view setBackgroundColor:[UIColor whiteColor]];
+    [self createPetSearchButton];
     [self createPetDataArray];
+}
+
+- (void)createPetSearchButton
+{
+    UIButton *listButton = [[UIButton alloc] init];
+    [listButton setImage:[UIImage imageNamed:@"nav_button_search.png"] forState:UIControlStateNormal];
+    [listButton addTarget:self action:@selector(actionSearchButton:) forControlEvents:UIControlEventTouchUpInside];
+    [listButton sizeToFit];
+    
+    self.searchButton = [[[UIBarButtonItem alloc] initWithCustomView:listButton] autorelease];
+    [listButton release];
+    
+    [self.navigationItem setRightBarButtonItem:_searchButton];
+}
+
+- (void)actionSearchButton:(UIBarButtonItem *)button
+{
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"검색 옵션을 선택하세요." delegate:self cancelButtonTitle:@"취소" destructiveButtonTitle:nil otherButtonTitles:@"서울특별시", nil];
+    [actionSheet showInView:self.view];
 }
 
 - (NSURL *)createPetURLStringWithStartDate:(NSString *)startDate withEndDate:(NSString *)endDate withPetKind:(NSString *)petKind withPage:(NSString *)page
@@ -208,7 +228,7 @@ const NSString *kLPPetQueryURL = @"/portal_rnl/abandonment/protection_list.jsp";
 
 - (NSInteger)quiltViewNumberOfColumns:(TMQuiltView *)quiltView
 {
-    return 2;
+    return 3;
 }
 
 - (CGFloat)quiltView:(TMQuiltView *)quiltView heightForCellAtIndexPath:(NSIndexPath *)indexPath
