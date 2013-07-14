@@ -32,6 +32,8 @@
 		FB16EC3117910B6F007A352C /* UITableViewController+ISRefreshControl.m in Sources */ = {isa = PBXBuildFile; fileRef = FB16EC2917910B6F007A352C /* UITableViewController+ISRefreshControl.m */; };
 		FB16EC3617910C5E007A352C /* ISMethodSwizzling.m in Sources */ = {isa = PBXBuildFile; fileRef = FB16EC3517910C5E007A352C /* ISMethodSwizzling.m */; };
 		FB16EC3817910C7B007A352C /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FB16EC3717910C7B007A352C /* QuartzCore.framework */; };
+		FB6655F81792D91F00B4C3F2 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FB6655F71792D91F00B4C3F2 /* SystemConfiguration.framework */; };
+		FB6655FA1792D93600B4C3F2 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FB6655F91792D93600B4C3F2 /* MobileCoreServices.framework */; };
 		FB8CD9771787CFFB00D2ED21 /* LPRootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FB8CD9731787CFFB00D2ED21 /* LPRootViewController.m */; };
 		FB8CD9791787D06500D2ED21 /* libxml2.2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = FB8CD9781787D06500D2ED21 /* libxml2.2.dylib */; };
 		FB8CD97D1787D75700D2ED21 /* LPLeftListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FB8CD97C1787D75700D2ED21 /* LPLeftListViewController.m */; };
@@ -134,6 +136,8 @@
 		FB16EC3417910C5E007A352C /* ISMethodSwizzling.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ISMethodSwizzling.h; sourceTree = "<group>"; };
 		FB16EC3517910C5E007A352C /* ISMethodSwizzling.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ISMethodSwizzling.m; sourceTree = "<group>"; };
 		FB16EC3717910C7B007A352C /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		FB6655F71792D91F00B4C3F2 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		FB6655F91792D93600B4C3F2 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		FB8CD9721787CFFB00D2ED21 /* LPRootViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LPRootViewController.h; sourceTree = "<group>"; };
 		FB8CD9731787CFFB00D2ED21 /* LPRootViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPRootViewController.m; sourceTree = "<group>"; };
 		FB8CD9781787D06500D2ED21 /* libxml2.2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.2.dylib; path = usr/lib/libxml2.2.dylib; sourceTree = SDKROOT; };
@@ -211,6 +215,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FB6655FA1792D93600B4C3F2 /* MobileCoreServices.framework in Frameworks */,
+				FB6655F81792D91F00B4C3F2 /* SystemConfiguration.framework in Frameworks */,
 				FB16EC3817910C7B007A352C /* QuartzCore.framework in Frameworks */,
 				FB9C42F61788CA050094505E /* Security.framework in Frameworks */,
 				FB9C42F41788C8F90094505E /* Social.framework in Frameworks */,
@@ -505,6 +511,8 @@
 		FBC9743D1787CF2300915EB5 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				FB6655F91792D93600B4C3F2 /* MobileCoreServices.framework */,
+				FB6655F71792D91F00B4C3F2 /* SystemConfiguration.framework */,
 				FB16EC3717910C7B007A352C /* QuartzCore.framework */,
 				FB9C42F51788CA050094505E /* Security.framework */,
 				FB9C42F31788C8F90094505E /* Social.framework */,
