@@ -37,7 +37,7 @@ const CGFloat kLPPetDetailViewBottomHeight = 60;
 
 - (void)createPhotoView
 {
-    self.photoView = [[[UIImageView alloc] init] autorelease];
+    self.photoView = [[UIImageView alloc] init];
     _photoView.contentMode = UIViewContentModeScaleAspectFit;
     _photoView.clipsToBounds = YES;
     [self addSubview:_photoView];
@@ -45,7 +45,7 @@ const CGFloat kLPPetDetailViewBottomHeight = 60;
 
 - (void)createTypeLabel
 {
-    self.typeLabel = [[[UILabel alloc] init] autorelease];
+    self.typeLabel = [[UILabel alloc] init];
     _typeLabel.backgroundColor = [UIColor clearColor];
     _typeLabel.textColor = RGB(23, 23, 23);
     _typeLabel.font = [UIFont boldSystemFontOfSize:kLPPetDatailViewBigPoint];
@@ -54,7 +54,7 @@ const CGFloat kLPPetDetailViewBottomHeight = 60;
 
 - (void)createDayLabel
 {
-    self.dayLabel = [[[UILabel alloc] init] autorelease];
+    self.dayLabel = [[UILabel alloc] init];
     _dayLabel.backgroundColor = [UIColor clearColor];
     _dayLabel.textColor = RGB(23, 23, 23);
     _dayLabel.textAlignment = NSTextAlignmentRight;
@@ -64,7 +64,7 @@ const CGFloat kLPPetDetailViewBottomHeight = 60;
 
 - (void)createBoardIDLabel
 {
-    self.boardIDLabel = [[[UILabel alloc] init] autorelease];
+    self.boardIDLabel = [[UILabel alloc] init];
     _boardIDLabel.backgroundColor = [UIColor clearColor];
     _boardIDLabel.textColor = RGB(23, 23, 23);
     _boardIDLabel.font = [UIFont boldSystemFontOfSize:kLPPetDatailViewBigPoint];
@@ -73,7 +73,7 @@ const CGFloat kLPPetDetailViewBottomHeight = 60;
 
 - (void)createDetailLabel
 {
-    self.detailLabel = [[[UILabel alloc] init] autorelease];
+    self.detailLabel = [[UILabel alloc] init];
     _detailLabel.backgroundColor = [UIColor clearColor];
     _detailLabel.textColor = RGB(23, 23, 23);
     _detailLabel.font = [UIFont systemFontOfSize:kLPPetDatailViewSmallPoint];
@@ -82,7 +82,7 @@ const CGFloat kLPPetDetailViewBottomHeight = 60;
 
 - (void)createTelLabel
 {
-    self.telLabel = [[[UILabel alloc] init] autorelease];
+    self.telLabel = [[UILabel alloc] init];
     _telLabel.backgroundColor = [UIColor clearColor];
     _telLabel.textColor = RGB(23, 23, 23);
     _telLabel.font = [UIFont systemFontOfSize:kLPPetDatailViewSmallPoint];

@@ -11,7 +11,6 @@
 
 #import "HTMLParser.h"
 #import "HTMLNode.h"
-#import "WebImageOperations.h"
 
 #import "LPPetVO.h"
 
@@ -28,7 +27,7 @@
 
 - (void)loadView
 {
-    UIView *view = [[[LPPetDetailView alloc] init] autorelease];
+    UIView *view = [[LPPetDetailView alloc] init];
     self.view = view;
     [view sizeToFit];
     [view setBackgroundColor:[UIColor whiteColor]];
@@ -55,7 +54,6 @@
     
     UIBarButtonItem *shareButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(actionShareButton:)];
     [self.navigationItem setRightBarButtonItem:shareButtonItem];
-    [shareButtonItem release];
 }
 
 - (void)actionShareButton:(UIBarButtonItem *)button
@@ -72,11 +70,11 @@
 {
     UIImageView *titleView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"navbar_lovepet.png"]];
     [self.navigationItem setTitleView:titleView];
-    [titleView release];
 }
 
 - (void)createPetDetailData:(LPPetVO *)petVO
 {
+    /*
     NSString *html = [[NSString alloc] initWithContentsOfURL:[NSURL URLWithString:petVO.linkSrc]
                                                     encoding:NSEUCKRStringEncoding
                                                        error:nil];
@@ -99,10 +97,12 @@
     self.petVO = petVO;
     
     [self loadPetDetailData];
+     */
 }
 
 - (void)loadPetDetailData
 {
+    /*
     [WebImageOperations processImageDataWithURLString:_petVO.imageSrc andBlock:^(NSData *imageData) {
         if (self.view.window) {
             UIImage *image = [UIImage imageWithData:imageData];
@@ -111,6 +111,7 @@
             [self loadComplete];
         }
     }];
+     */
 }
 
 - (void)loadComplete

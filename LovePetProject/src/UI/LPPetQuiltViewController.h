@@ -7,9 +7,11 @@
 //
 
 #import "TMQuiltViewController.h"
-
+@class ISRefreshControl, LPPetDAO;
 @interface LPPetQuiltViewController : TMQuiltViewController <UIActionSheetDelegate>
+- (id)initWithPetDAO:(LPPetDAO *)petDAO;
+@property (nonatomic, strong) NSArray *petDataSource;
 @property (nonatomic, strong) UIBarButtonItem *searchButton;
-@property (nonatomic, retain) NSMutableArray *prePetQuilts;
-@property (nonatomic, retain) NSArray *petQuilts;
+@property (nonatomic, strong) ISRefreshControl *refreshControl;
+@property (nonatomic, strong) LPPetDAO *petDAO;
 @end

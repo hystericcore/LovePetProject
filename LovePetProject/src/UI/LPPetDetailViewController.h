@@ -11,6 +11,6 @@
 @class LPPetVO;
 
 @interface LPPetDetailViewController : UIViewController
-@property (nonatomic, retain) LPPetVO *petVO;
+@property (nonatomic, strong) LPPetVO *petVO;
 - (void)createPetDetailData:(LPPetVO *)petVO;
 @end

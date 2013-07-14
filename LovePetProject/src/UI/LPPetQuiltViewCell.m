@@ -37,20 +37,9 @@ const CGFloat kLPPetQuiltViewDayPoint = 10;
     return self;
 }
 
-- (void)dealloc
-{
-    self.photoView = nil;
-    self.typeView = nil;
-    self.typeLabel = nil;
-    self.dayLabel = nil;
-    self.detailLabel = nil;
-    
-    [super dealloc];
-}
-
 - (void)createPhotoView
 {
-    self.photoView = [[[UIImageView alloc] init] autorelease];
+    self.photoView = [[UIImageView alloc] init];
     _photoView.contentMode = UIViewContentModeScaleAspectFill;
     _photoView.clipsToBounds = YES;
     [self addSubview:_photoView];
@@ -58,7 +47,7 @@ const CGFloat kLPPetQuiltViewDayPoint = 10;
 
 - (void)createTypeView
 {
-    self.typeView = [[[UIImageView alloc] init] autorelease];
+    self.typeView = [[UIImageView alloc] init];
     _typeView.contentMode = UIViewContentModeScaleAspectFill;
     _typeView.clipsToBounds = YES;
     [self addSubview:_typeView];
@@ -66,7 +55,7 @@ const CGFloat kLPPetQuiltViewDayPoint = 10;
 
 - (void)createTypeLabel
 {
-    self.typeLabel = [[[UILabel alloc] init] autorelease];
+    self.typeLabel = [[UILabel alloc] init];
     _typeLabel.backgroundColor = [UIColor clearColor];
     _typeLabel.textColor = RGB(23, 23, 23);
     _typeLabel.font = [UIFont boldSystemFontOfSize:kLPPetQuiltViewTypePoint];
@@ -75,7 +64,7 @@ const CGFloat kLPPetQuiltViewDayPoint = 10;
 
 - (void)createDayLabel
 {
-    self.dayLabel = [[[UILabel alloc] init] autorelease];
+    self.dayLabel = [[UILabel alloc] init];
     _dayLabel.backgroundColor = [UIColor clearColor];
     _dayLabel.textColor = RGB(23, 23, 23);
     _dayLabel.textAlignment = NSTextAlignmentRight;
@@ -85,7 +74,7 @@ const CGFloat kLPPetQuiltViewDayPoint = 10;
 
 - (void)createDetailLabel
 {
-    self.detailLabel = [[[UILabel alloc] init] autorelease];
+    self.detailLabel = [[UILabel alloc] init];
     _detailLabel.backgroundColor = [UIColor clearColor];
     _detailLabel.textColor = RGB(23, 23, 23);
     _detailLabel.font = [UIFont systemFontOfSize:kLPPetQuiltViewDayPoint];

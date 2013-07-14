@@ -7,18 +7,19 @@
 //
 
 #import "LPRootViewController.h"
+#import "LPPetDAO.h"
 #import "LPPetQuiltViewController.h"
 #import "LPLoginViewController.h"
 
 @implementation LPRootViewController
 
-- (void)dealloc
+- (id)init
 {
-    self.leftListViewController = nil;
-    self.navController = nil;
-    self.leftListButton = nil;
-    
-    [super dealloc];
+    self = [super init];
+    if (self) {
+        self.petDAO = [[LPPetDAO alloc] init];
+    }
+    return self;
 }
 
 - (void)viewDidLoad
@@ -48,7 +49,7 @@
     [[UINavigationBar appearance] setBackgroundImage:[UIImage imageNamed:@"navbar_background.png"]
                                        forBarMetrics:UIBarMetricsDefault];
     
-    self.navController = [[[UINavigationController alloc] init] autorelease];
+    self.navController = [[UINavigationController alloc] init];
     [_navController.view setFrame:self.view.bounds];
     [_navController.view.layer setMasksToBounds:NO];
     [_navController.view.layer setShadowRadius:5];
@@ -64,8 +65,7 @@
     [listButton addTarget:self action:@selector(actionListButton:) forControlEvents:UIControlEventTouchUpInside];
     [listButton sizeToFit];
     
-    self.leftListButton = [[[UIBarButtonItem alloc] initWithCustomView:listButton] autorelease];
-    [listButton release];
+    self.leftListButton = [[UIBarButtonItem alloc] initWithCustomView:listButton];
 }
 
 - (void)actionListButton:(UIBarButtonItem *)button
@@ -80,12 +80,11 @@
 - (UIViewController *)createPetListController
 {
     // Pet List Controller create
-    LPPetQuiltViewController *petListController = [[LPPetQuiltViewController alloc] init];
+    LPPetQuiltViewController *petListController = [[LPPetQuiltViewController alloc] initWithPetDAO:_petDAO];
     [petListController.navigationItem setLeftBarButtonItem:_leftListButton];
     
     UIImageView *titleView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"navbar_lovepet.png"]];
     [petListController.navigationItem setTitleView:titleView];
-    [titleView release];
     
     return petListController;
 }
@@ -97,7 +96,6 @@
     
     UIImageView *titleView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"navbar_lovepet.png"]];
     [loginViewController.navigationItem setTitleView:titleView];
-    [titleView release];
     
     return loginViewController;
 }

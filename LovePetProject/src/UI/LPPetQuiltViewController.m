@@ -7,28 +7,28 @@
 //
 
 #import "LPPetQuiltViewController.h"
+#import "UIViewController+KNSemiModal.h"
+
 #import "HTMLParser.h"
-#import "WebImageOperations.h"
+#import "ISRefreshControl.h"
 #import "TMQuiltView.h"
 
 #import "LPPetVO.h"
+#import "LPPetDAO.h"
 #import "LPPetQuiltViewCell.h"
-
 #import "LPPetDetailViewController.h"
 
-const NSString *kLPPetQueryURL = @"/portal_rnl/abandonment/protection_list.jsp";
-//const NSString *kLPPetQueryStartDate = @"s_date";
-//const NSString *kLPPetQueryEndDate = @"e_date";
-//const NSString *kLPPetQueryPageCnt = @"pagecnt";
-
 @implementation LPPetQuiltViewController
-@synthesize prePetQuilts = _prePetQuilts;
-@synthesize petQuilts = _petQuilts;
 
-- (id)init
+- (id)initWithPetDAO:(LPPetDAO *)petDAO
 {
     self = [super init];
     if (self) {
+        self.petDAO = petDAO;
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(petListUpdateComplete:) name:kLPNotificationPetListUpdateComplete object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(petListUpdateFail:) name:kLPNotificationPetListUpdateFail object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(petListRequestFail:) name:kLPNotificationPetListRequestFail object:nil];
         
     }
     return self;
@@ -36,10 +36,7 @@ const NSString *kLPPetQueryURL = @"/portal_rnl/abandonment/protection_list.jsp";
 
 - (void)dealloc
 {
-    self.prePetQuilts = nil;
-    self.petQuilts = nil;
-    
-    [super dealloc];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)viewDidLoad
@@ -48,8 +45,38 @@ const NSString *kLPPetQueryURL = @"/portal_rnl/abandonment/protection_list.jsp";
     
     [self.view setBackgroundColor:[UIColor whiteColor]];
     [self createPetSearchButton];
-    [self createPetDataArray];
+    [self createPullToRefresh];
+    
+    [_petDAO resetPetDataSourceWithPetKind:nil location:nil];
 }
+
+#pragma mark - Pet DAO Notification
+
+- (void)petListUpdateComplete:(NSNotification *)notification
+{
+    [self.quiltView beginUpdates];
+    self.petDataSource = [_petDAO getPetDataSource];
+    [self.quiltView endUpdates];
+    [_refreshControl endRefreshing];
+}
+
+- (void)petListUpdateFail:(NSNotification *)notification
+{
+    [self.quiltView beginUpdates];
+    self.petDataSource = [_petDAO getPetDataSource];
+    [self.quiltView endUpdates];
+    [_refreshControl endRefreshing];
+}
+
+- (void)petListRequestFail:(NSNotification *)notification
+{
+    [_refreshControl endRefreshing];
+    
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"알림" message:@"리스트를 가져오는데 실패했습니다!" delegate:self cancelButtonTitle:@"닫기" otherButtonTitles:nil];
+    [alert show];
+}
+
+#pragma mark - Pet Search Button Methods
 
 - (void)createPetSearchButton
 {
@@ -58,143 +85,59 @@ const NSString *kLPPetQueryURL = @"/portal_rnl/abandonment/protection_list.jsp";
     [listButton addTarget:self action:@selector(actionSearchButton:) forControlEvents:UIControlEventTouchUpInside];
     [listButton sizeToFit];
     
-    self.searchButton = [[[UIBarButtonItem alloc] initWithCustomView:listButton] autorelease];
-    [listButton release];
+    self.searchButton = [[UIBarButtonItem alloc] initWithCustomView:listButton];
     
     [self.navigationItem setRightBarButtonItem:_searchButton];
 }
 
 - (void)actionSearchButton:(UIBarButtonItem *)button
 {
-    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"검색 옵션을 선택하세요." delegate:self cancelButtonTitle:@"취소" destructiveButtonTitle:nil otherButtonTitles:@"서울특별시", nil];
-    [actionSheet showInView:self.view];
+    UIViewController *viewController = [[UIViewController alloc] init];
+    [viewController.view setFrame:CGRectMake(0, 0, 320, CGRectGetHeight(self.view.bounds) / 4 * 3)];
+    [viewController.view setBackgroundColor:[UIColor whiteColor]];
+    [self presentSemiViewController:viewController
+                        withOptions:@{KNSemiModalOptionKeys.pushParentBack    : @(YES),
+                                      KNSemiModalOptionKeys.animationDuration : @(0.5),
+                                      KNSemiModalOptionKeys.shadowOpacity     : @(0.3),
+                                      }];
 }
 
-- (NSURL *)createPetURLStringWithStartDate:(NSString *)startDate withEndDate:(NSString *)endDate withPetKind:(NSString *)petKind withPage:(NSString *)page
+#pragma mark - Pull To Refresh Methods
+
+- (void)createPullToRefresh
 {
-    NSString *string = [NSString stringWithFormat:@"%@%@?s_date=%@&e_date=%@&s_up_kind_cd=%@&pagecnt=%@", kLPPetDataDomain, kLPPetQueryURL, startDate, endDate, petKind, page];
-    return [NSURL URLWithString:string];
+    self.refreshControl = [[ISRefreshControl alloc] init];
+    [self.quiltView addSubview:_refreshControl];
+    [_refreshControl addTarget:self action:@selector(pullToRefresh:) forControlEvents:UIControlEventValueChanged];
 }
 
-- (void)createPetDataArray
+- (void)pullToRefresh:(ISRefreshControl *)refreshControl
 {
-    // 임시 날짜 생성
-    NSCalendar *cal = [NSCalendar currentCalendar];
-    NSDateComponents *components = [cal components:( NSHourCalendarUnit | NSMinuteCalendarUnit | NSSecondCalendarUnit ) fromDate:[[NSDate alloc] init]];
-    
-    [components setHour:-[components hour]];
-    [components setMinute:-[components minute]];
-    [components setSecond:-[components second]];
-    NSDate *today = [cal dateByAddingComponents:components toDate:[[NSDate alloc] init] options:0]; //This variable should now be pointing at a date object that is the start of today (midnight);
-    
-    [components setHour:-24 * 2];
-    [components setMinute:0];
-    [components setSecond:0];
-    NSDate *startday = [cal dateByAddingComponents:components toDate:today options:0];
-    
-    NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
-    [dateFormat setDateFormat:@"yyyy-MM-dd"];
-    
-    NSString *startdayString = [dateFormat stringFromDate:startday];
-    NSString *enddayString = [dateFormat stringFromDate:today];
-    
-    NSMutableArray *petQuilts = [[NSMutableArray alloc] initWithCapacity:0];
-    NSString *html = [[NSString alloc] initWithContentsOfURL:[self createPetURLStringWithStartDate:startdayString
-                                                                                       withEndDate:enddayString
-                                                                                       withPetKind:@""
-                                                                                          withPage:@""]
-                                                    encoding:NSEUCKRStringEncoding
-                                                       error:nil];
-    
-    HTMLParser *parser = [[HTMLParser alloc] initWithString:html error:nil];
-    HTMLNode *bodyNode = [parser body];
-    
-    NSArray *thumbnailImgNodes = [bodyNode findChildrenOfClass:@"thumbnail_img01"];
-    NSArray *linkButtonNodes = [bodyNode findChildrenOfClass:@"thumbnail_btn01"];
-    NSArray *tableNodes = [bodyNode findChildrenOfClass:@"thumbnail_table01"];
-
-    for (int i = 0; i < thumbnailImgNodes.count; i++) {
-        LPPetVO *vo = [[LPPetVO alloc] init];
-        
-        // thumbnail
-        HTMLNode *thumbnailImgNode = [thumbnailImgNodes objectAtIndex:i];
-        HTMLNode *thumbnailNode = [thumbnailImgNode findChildTag:@"img"];
-        vo.thumbnailSrc = [NSString stringWithFormat:@"%@%@", kLPPetDataDomain, [thumbnailNode getAttributeNamed:@"src"]];
-        
-        // link
-        HTMLNode *linkButtonNode = [linkButtonNodes objectAtIndex:i];
-        HTMLNode *linkNode = [linkButtonNode findChildTag:@"a"];
-        vo.linkSrc = [NSString stringWithFormat:@"%@%@", kLPPetDataDomain, [linkNode getAttributeNamed:@"href"]];
-        
-        // text
-        HTMLNode *tableNode = [tableNodes objectAtIndex:i];
-        NSArray *tdNodes = [tableNode findChildTags:@"td"];
-        
-        vo.boardID = [(HTMLNode *)[tdNodes objectAtIndex:0] contents];
-        vo.date = [(HTMLNode *)[tdNodes objectAtIndex:1] contents];
-        vo.type = [(HTMLNode *)[tdNodes objectAtIndex:2] contents];
-        vo.sex = [(HTMLNode *)[tdNodes objectAtIndex:3] contents];
-        vo.foundLocation = [(HTMLNode *)[tdNodes objectAtIndex:4] contents];
-        vo.detail = [(HTMLNode *)[tdNodes objectAtIndex:5] contents];
-        vo.state = [(HTMLNode *)[tdNodes objectAtIndex:6] contents];
-        
-        [petQuilts addObject:vo];
-        [vo release];
-    }
-    
-    self.prePetQuilts = petQuilts;
-    [petQuilts release];
-    
-    [self loadThumbnailImages];
-}
-
-- (void)loadThumbnailImages
-{
-    for (LPPetVO *vo in _prePetQuilts) {
-        if (vo.thumbnail != nil) {
-            continue;
-        }
-        
-        [WebImageOperations processImageDataWithURLString:vo.thumbnailSrc andBlock:^(NSData *imageData) {
-            if (self.view.window) {
-                UIImage *image = [UIImage imageWithData:imageData];
-                vo.thumbnail = image;
-                
-                [self loadComplete];
-            }
-        }];
-    }
-}
-
-- (void)loadComplete
-{
-    for (LPPetVO *vo in _prePetQuilts) {
-        if (vo.thumbnail == nil) {
-            return;
-        }
-    }
-    
-    self.petQuilts = _prePetQuilts;
-    [self.quiltView reloadData];
+    [self.quiltView beginUpdates];
+    [_petDAO resetPetDataSourceWithPetKind:nil location:nil];
 }
 
 #pragma mark - QuiltViewControllerDataSource
 
 - (NSInteger)quiltViewNumberOfCells:(TMQuiltView *)TMQuiltView
 {
-    return [_petQuilts count];
+    return _petDataSource.count;
 }
 
 - (TMQuiltViewCell *)quiltView:(TMQuiltView *)quiltView cellAtIndexPath:(NSIndexPath *)indexPath
 {
+    if (_petDataSource.count == indexPath.row + 1) {
+        [_petDAO requestNextPetList];
+    }
+    
     static NSString *petIdentifier = @"PetIdentifier";
     LPPetQuiltViewCell *cell = (LPPetQuiltViewCell *)[quiltView dequeueReusableCellWithReuseIdentifier:petIdentifier];
     
     if (cell == nil) {
-        cell = [[[LPPetQuiltViewCell alloc] initWithReuseIdentifier:petIdentifier] autorelease];
+        cell = [[LPPetQuiltViewCell alloc] initWithReuseIdentifier:petIdentifier];
     }
     
-    LPPetVO *vo = [_petQuilts objectAtIndex:indexPath.row];
+    LPPetVO *vo = [_petDataSource objectAtIndex:indexPath.row];
     cell.photoView.image = vo.thumbnail;
     cell.typeLabel.text = vo.type;
     
@@ -218,35 +161,37 @@ const NSString *kLPPetQueryURL = @"/portal_rnl/abandonment/protection_list.jsp";
 {
     NSCalendar *currentCalendar = [NSCalendar currentCalendar];
     NSDateComponents *components = [currentCalendar components: NSDayCalendarUnit fromDate: firstDate toDate: secondDate options: 0];
-    
     NSInteger days = [components day];
-    
     return days;
 }
 
 #pragma mark - TMQuiltViewDelegate
 
-- (NSInteger)quiltViewNumberOfColumns:(TMQuiltView *)quiltView
-{
-    return 3;
-}
-
-- (CGFloat)quiltView:(TMQuiltView *)quiltView heightForCellAtIndexPath:(NSIndexPath *)indexPath
-{
-    LPPetVO *vo = [_petQuilts objectAtIndex:indexPath.row];
-    CGFloat ratio = vo.thumbnail.size.width / vo.thumbnail.size.height;
-    return [quiltView cellWidth] / ratio + kLPPetQuiltViewTextPlaceHeight;
-}
-
 - (void)quiltView:(TMQuiltView *)quiltView didSelectCellAtIndexPath:(NSIndexPath *)indexPath
 {
-    LPPetVO *vo = [_petQuilts objectAtIndex:indexPath.row];
+    LPPetVO *vo = [_petDataSource objectAtIndex:indexPath.row];
     NSLog(@"%@", vo.linkSrc);
     
     LPPetDetailViewController *viewController = [[LPPetDetailViewController alloc] init];
     [viewController createPetDetailData:vo];
     [self.navigationController pushViewController:viewController animated:YES];
-    [viewController release];
+}
+
+- (NSInteger)quiltViewNumberOfColumns:(TMQuiltView *)quiltView
+{
+    return 2;
+}
+
+- (CGFloat)quiltViewMargin:(TMQuiltView *)quilView marginType:(TMQuiltViewMarginType)marginType
+{
+    return 8;
+}
+
+- (CGFloat)quiltView:(TMQuiltView *)quiltView heightForCellAtIndexPath:(NSIndexPath *)indexPath
+{
+    LPPetVO *vo = [_petDataSource objectAtIndex:indexPath.row];
+    CGFloat ratio = vo.thumbnail.size.width / vo.thumbnail.size.height;
+    return [quiltView cellWidth] / ratio + kLPPetQuiltViewTextPlaceHeight;
 }
 
 @end

@@ -9,10 +9,10 @@
 #import <UIKit/UIKit.h>
 
 @interface LPPetDetailView : UIView
-@property (nonatomic, retain) UIImageView *photoView;
-@property (nonatomic, retain) UILabel *typeLabel;
-@property (nonatomic, retain) UILabel *dayLabel;
-@property (nonatomic, retain) UILabel *boardIDLabel;
-@property (nonatomic, retain) UILabel *detailLabel;
-@property (nonatomic, retain) UILabel *telLabel;
+@property (nonatomic, strong) UIImageView *photoView;
+@property (nonatomic, strong) UILabel *typeLabel;
+@property (nonatomic, strong) UILabel *dayLabel;
+@property (nonatomic, strong) UILabel *boardIDLabel;
+@property (nonatomic, strong) UILabel *detailLabel;
+@property (nonatomic, strong) UILabel *telLabel;
 @end

@@ -10,13 +10,6 @@
 
 @implementation LPLeftListViewController
 
-- (void)dealloc
-{
-    self.listDataArray = nil;
-    
-    [super dealloc];
-}
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -45,7 +38,7 @@
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:leftListIdentifier];
     
     if (cell == nil) {
-        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:leftListIdentifier] autorelease];
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:leftListIdentifier];
         [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
     }
     

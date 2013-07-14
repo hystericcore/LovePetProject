@@ -9,7 +9,10 @@
 #import <UIKit/UIKit.h>
 #import "LPLeftListViewController.h"
 
+@class LPPetDAO;
 @interface LPRootViewController : UIViewController <LPLeftListViewControllerDelegate>
+// DAO
+@property (nonatomic, strong) LPPetDAO *petDAO;
 // Left list
 @property (nonatomic, strong) LPLeftListViewController *leftListViewController;
 // Main navigation controller

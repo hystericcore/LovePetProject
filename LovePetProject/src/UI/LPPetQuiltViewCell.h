@@ -11,9 +11,9 @@
 const static CGFloat kLPPetQuiltViewTextPlaceHeight = 52;
 
 @interface LPPetQuiltViewCell : TMQuiltViewCell
-@property (nonatomic, retain) UIImageView *photoView;
-@property (nonatomic, retain) UIImageView *typeView;
-@property (nonatomic, retain) UILabel *typeLabel;
-@property (nonatomic, retain) UILabel *dayLabel;
-@property (nonatomic, retain) UILabel *detailLabel;
+@property (nonatomic, strong) UIImageView *photoView;
+@property (nonatomic, strong) UIImageView *typeView;
+@property (nonatomic, strong) UILabel *typeLabel;
+@property (nonatomic, strong) UILabel *dayLabel;
+@property (nonatomic, strong) UILabel *detailLabel;
 @end
