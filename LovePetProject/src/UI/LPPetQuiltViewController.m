@@ -9,7 +9,6 @@
 #import "LPPetQuiltViewController.h"
 #import "UIViewController+KNSemiModal.h"
 
-#import "HTMLParser.h"
 #import "ISRefreshControl.h"
 #import "TMQuiltView.h"
 
@@ -71,7 +70,7 @@
 {
     [_refreshControl endRefreshing];
     
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"알림" message:@"리스트를 가져오는데 실패했습니다!" delegate:self cancelButtonTitle:@"닫기" otherButtonTitles:nil];
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"알림" message:@"데이터를 가져오는데 실패했습니다!" delegate:self cancelButtonTitle:@"닫기" otherButtonTitles:nil];
     [alert show];
 }
 
@@ -168,11 +167,8 @@
 
 - (void)quiltView:(TMQuiltView *)quiltView didSelectCellAtIndexPath:(NSIndexPath *)indexPath
 {
-    LPPetVO *vo = [_petDataSource objectAtIndex:indexPath.row];
-    NSLog(@"%@", vo.linkSrc);
-    
-    LPPetDetailViewController *viewController = [[LPPetDetailViewController alloc] init];
-    [viewController createPetDetailData:vo];
+    LPPetDetailViewController *viewController = [[LPPetDetailViewController alloc] initWithPetDAO:_petDAO];
+    [viewController loadPetDataAtIndex:indexPath.row];
     [self.navigationController pushViewController:viewController animated:YES];
 }
 

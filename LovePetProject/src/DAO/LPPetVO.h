@@ -7,13 +7,11 @@
 //
 
 #import <Foundation/Foundation.h>
-
+@class LPPetDetailVO;
 @interface LPPetVO : NSObject
 - (id)initWithProperties:(NSDictionary *)properties;
 @property (nonatomic, strong) NSString *thumbnailSrc;
 @property (nonatomic, strong) UIImage *thumbnail;
-@property (nonatomic, strong) NSString *imageSrc;
-@property (nonatomic, strong) UIImage *image;
 @property (nonatomic, strong) NSString *linkSrc;
 @property (nonatomic, strong) NSString *boardID;
 @property (nonatomic, strong) NSString *date;
@@ -24,4 +22,5 @@
 @property (nonatomic, strong) NSString *detail;
 @property (nonatomic, strong) NSString *state;
 @property (nonatomic, strong) NSString *tel;
+@property (nonatomic, strong) LPPetDetailVO *detailVO;
 @end

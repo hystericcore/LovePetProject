@@ -9,10 +9,15 @@
 #import "LPPetDAO.h"
 #import "AFNetworking.h"
 #import "LPPetVO.h"
+#import "LPPetDetailVO.h"
 
-NSString *const kLPNotificationPetListUpdateComplete = @"petDAO.updateComplete";
-NSString *const kLPNotificationPetListUpdateFail = @"petDAO.updateFail";
-NSString *const kLPNotificationPetListRequestFail = @"petDAO.requestFail";
+NSString *const kLPNotificationPetListUpdateComplete = @"petDAO.listUpdateComplete";
+NSString *const kLPNotificationPetListUpdateFail = @"petDAO.listUpdateFail";
+NSString *const kLPNotificationPetListRequestFail = @"petDAO.listRequestFail";
+
+NSString *const kLPNotificationPetDetailRequestComplete = @"petDAO.detailRequestComplete";
+NSString *const kLPNotificationPetDetailRequestFail = @"petDAO.detailRequestFail";
+
 NSString *const kLPPetKindCat = @"422400";
 NSString *const kLPPetKindDog = @"417000";
 
@@ -28,6 +33,10 @@ NSInteger const kLPPetQueryDateCountFromNowDefault = 0;
 
 NSString *const kLPPetListJSONKey = @"petList";
 NSInteger const kLPPetListCount = 10;
+
+NSString *const kLPPetDetailQueryURL = @"http://lovepetproject.appspot.com/petDetail";
+
+NSString *const kLPPetDetailJSONKey = @"petDetail";
 
 @interface LPPetDAO ()
 @property (nonatomic, strong) NSMutableArray *petDataSource;
@@ -72,10 +81,69 @@ NSInteger const kLPPetListCount = 10;
     [self requestPetList];
 }
 
+- (void)requestPetDetailDataAtIndex:(NSUInteger)index
+{
+    LPPetVO *petVO = [_petDataSource objectAtIndex:index];
+    
+    if (petVO.detailVO != nil) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:kLPNotificationPetDetailRequestComplete object:self];
+        return;
+    }
+    
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:kLPPetDetailQueryURL]];
+    NSString *postString = [NSString stringWithFormat:@"linkSrc=%@", petVO.linkSrc];
+    [request setHTTPMethod:@"POST"];
+    [request setHTTPBody:[postString dataUsingEncoding:NSUTF8StringEncoding]];
+    
+    void (^success)(NSURLRequest *, NSHTTPURLResponse *, id) = ^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
+        NSDictionary *petDetailData = [JSON objectForKey:kLPPetDetailJSONKey];
+        
+        if (petDetailData != nil) {
+            LPPetDetailVO *detailVO = [[LPPetDetailVO alloc] initWithProperties:petDetailData];
+            [petVO setDetailVO:detailVO];
+            
+            NSURL *imageURL = [NSURL URLWithString:detailVO.imageSrc];
+            NSURLRequest *request = [NSURLRequest requestWithURL:imageURL];
+            
+            UIImage *(^imageProcessingBlock)(UIImage *image) = ^UIImage *(UIImage *image) {
+                return image;
+            };
+            void (^success)(NSURLRequest *, NSHTTPURLResponse *, UIImage *) = ^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
+                detailVO.image = image;
+                [[NSNotificationCenter defaultCenter] postNotificationName:kLPNotificationPetDetailRequestComplete object:self];
+            };
+            void (^failure)(NSURLRequest *, NSHTTPURLResponse *, NSError *) = ^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
+                petVO.detailVO = nil;
+                [[NSNotificationCenter defaultCenter] postNotificationName:kLPNotificationPetDetailRequestFail object:self];
+            };
+            
+            [[AFImageRequestOperation imageRequestOperationWithRequest:request imageProcessingBlock:imageProcessingBlock success:success failure:failure] start];
+        } else {
+            [[NSNotificationCenter defaultCenter] postNotificationName:kLPNotificationPetDetailRequestFail object:self];
+        }
+    };
+    void (^failure)(NSURLRequest *, NSHTTPURLResponse *, NSError *, id) = ^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:kLPNotificationPetDetailRequestFail object:self];
+    };
+    
+    [[AFJSONRequestOperation JSONRequestOperationWithRequest:request success:success failure:failure] start];
+}
+
 - (NSArray *)getPetDataSource
 {
     return [NSArray arrayWithArray:_petDataSource];
 }
+
+- (id)getPetDetailDataAtIndex:(NSUInteger)index
+{
+    if (index >= _petDataSource.count) {
+        return nil;
+    }
+    
+    return [_petDataSource objectAtIndex:index];
+}
+
+#pragma mark - Private Methods
 
 - (void)requestPetList
 {

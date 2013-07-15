@@ -9,18 +9,21 @@
 #import "LPPetDetailViewController.h"
 #import "LPPetDetailView.h"
 
-#import "HTMLParser.h"
-#import "HTMLNode.h"
-
+#import "LPPetDAO.h"
 #import "LPPetVO.h"
+#import "LPPetDetailVO.h"
 
 @implementation LPPetDetailViewController
 
-- (id)init
+- (id)initWithPetDAO:(LPPetDAO *)petDAO
 {
     self = [super init];
     if (self) {
+        self.petDAO = petDAO;
         
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(petListUpdateComplete:) name:kLPNotificationPetListUpdateComplete object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(petListUpdateFail:) name:kLPNotificationPetListUpdateFail object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(petListRequestFail:) name:kLPNotificationPetListRequestFail object:nil];
     }
     return self;
 }
@@ -43,22 +46,13 @@
 
 - (void)createShareButton
 {
-//    UIImage *shareImage = [UIImage imageNamed:@"nav_button_sendto@2x.png"];
-//    UIButton *shareButton = [[UIButton alloc] init];
-//    [shareButton setImage:shareImage forState:UIControlStateNormal];
-//    [shareButton addTarget:self action:@selector(actionShareButton:) forControlEvents:UIControlEventTouchUpInside];
-//    [shareButton setFrame:CGRectMake(0, 0, 40, 30)];
-//    
-//    UIBarButtonItem *shareButtonItem = [[UIBarButtonItem alloc] initWithCustomView:shareButton];
-//    [shareButton release];
-    
     UIBarButtonItem *shareButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(actionShareButton:)];
     [self.navigationItem setRightBarButtonItem:shareButtonItem];
 }
 
 - (void)actionShareButton:(UIBarButtonItem *)button
 {
-    NSArray *activityItems = @[@"당신이 사랑하고 싶은 반려동물의 이야기, 유기동물을 입양해보는건 어떠세요?", _petVO.image];
+    NSArray *activityItems = @[@"당신이 사랑하고 싶은 반려동물의 이야기, 유기동물을 입양해보는건 어떠세요?", _petVO.detailVO.image];
     
     UIActivityViewController *activityController = [[UIActivityViewController alloc] initWithActivityItems:activityItems
                                                                                      applicationActivities:nil];
@@ -72,55 +66,33 @@
     [self.navigationItem setTitleView:titleView];
 }
 
-- (void)createPetDetailData:(LPPetVO *)petVO
+- (void)loadPetDataAtIndex:(NSInteger)index
 {
-    /*
-    NSString *html = [[NSString alloc] initWithContentsOfURL:[NSURL URLWithString:petVO.linkSrc]
-                                                    encoding:NSEUCKRStringEncoding
-                                                       error:nil];
+    _petIndex = index;
     
-    HTMLParser *parser = [[HTMLParser alloc] initWithString:html error:nil];
-    HTMLNode *bodyNode = [parser body];
-    
-    // Image
-    HTMLNode *imageNode = [bodyNode findChildOfClass:@"photoArea"];
-    petVO.imageSrc = [NSString stringWithFormat:@"%@%@", kLPPetDataDomain, [imageNode getAttributeNamed:@"src"]];
-    
-    // Telephone
-    HTMLNode *viewTableNode = [bodyNode findChildOfClass:@"viewTable"];
-    NSArray *trNodes = [viewTableNode findChildTags:@"tr"];
-    HTMLNode *trNode = [trNodes objectAtIndex:trNodes.count - 2];
-    NSArray *tdNodes = [trNode findChildTags:@"td"];
-    HTMLNode *telNode = [tdNodes objectAtIndex:1];
-    petVO.tel = [telNode contents];
-    
-    self.petVO = petVO;
-    
-    [self loadPetDetailData];
-     */
-}
-
-- (void)loadPetDetailData
-{
-    /*
-    [WebImageOperations processImageDataWithURLString:_petVO.imageSrc andBlock:^(NSData *imageData) {
-        if (self.view.window) {
-            UIImage *image = [UIImage imageWithData:imageData];
-            _petVO.image = image;
-            
-            [self loadComplete];
-        }
-    }];
-     */
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadComplete) name:kLPNotificationPetDetailRequestComplete object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadFail) name:kLPNotificationPetDetailRequestFail object:nil];
+    [_petDAO requestPetDetailDataAtIndex:index];
 }
 
 - (void)loadComplete
 {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    
+    self.petVO = [_petDAO getPetDetailDataAtIndex:_petIndex];
     LPPetDetailView *view = (LPPetDetailView *)self.view;
-    view.photoView.image = _petVO.image;
-    view.typeLabel.text = _petVO.type;
+    view.photoView.image = _petVO.detailVO.image;
+    view.typeLabel.text = _petVO.detailVO.type;
     view.dayLabel.text = _petVO.leftDay;
-    view.detailLabel.text = [NSString stringWithFormat:@"%@ / %@일 발견", _petVO.detail, _petVO.date];
+    view.detailLabel.text = [NSString stringWithFormat:@"%@ / %@일 발견", _petVO.detailVO.detail, _petVO.detailVO.date];
+}
+
+- (void)loadFail
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"알림" message:@"데이터를 가져오는데 실패했습니다!" delegate:self cancelButtonTitle:@"닫기" otherButtonTitles:nil];
+    [alert show];
 }
 
 @end

@@ -7,11 +7,12 @@
 //
 
 #import <Foundation/Foundation.h>
-@class LPPetVO;
-
 extern NSString *const kLPNotificationPetListRequestFail;
 extern NSString *const kLPNotificationPetListUpdateComplete;
 extern NSString *const kLPNotificationPetListUpdateFail;
+
+extern NSString *const kLPNotificationPetDetailRequestComplete;
+extern NSString *const kLPNotificationPetDetailRequestFail;
 
 extern NSString *const kLPPetKindCat;
 extern NSString *const kLPPetKindDog;
@@ -23,7 +24,9 @@ extern NSString *const kLPPetKindDog;
 }
 - (void)resetPetDataSourceWithPetKind:(NSString *)petKind location:(NSString *)location;
 - (void)requestNextPetList;
+- (void)requestPetDetailDataAtIndex:(NSUInteger)index;
 - (NSArray *)getPetDataSource;
+- (id)getPetDetailDataAtIndex:(NSUInteger)index;
 @end
 
 

@@ -7,10 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
-
-@class LPPetVO;
-
-@interface LPPetDetailViewController : UIViewController
+@class LPPetDAO, LPPetVO;
+@interface LPPetDetailViewController : UIViewController {
+    NSUInteger _petIndex;
+}
+- (id)initWithPetDAO:(LPPetDAO *)petDAO;
+@property (nonatomic, strong) LPPetDAO *petDAO;
 @property (nonatomic, strong) LPPetVO *petVO;
-- (void)createPetDetailData:(LPPetVO *)petVO;
+- (void)loadPetDataAtIndex:(NSInteger)index;
 @end
