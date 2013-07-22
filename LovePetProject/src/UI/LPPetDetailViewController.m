@@ -8,22 +8,15 @@
 
 #import "LPPetDetailViewController.h"
 #import "LPPetDetailView.h"
-
-#import "LPPetDAO.h"
 #import "LPPetVO.h"
-#import "LPPetDetailVO.h"
 
 @implementation LPPetDetailViewController
 
-- (id)initWithPetDAO:(LPPetDAO *)petDAO
+- (id)initWithPetVO:(LPPetVO *)petVO
 {
     self = [super init];
     if (self) {
-        self.petDAO = petDAO;
-        
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(petListUpdateComplete:) name:kLPNotificationPetListUpdateComplete object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(petListUpdateFail:) name:kLPNotificationPetListUpdateFail object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(petListRequestFail:) name:kLPNotificationPetListRequestFail object:nil];
+        self.petVO = petVO;
     }
     return self;
 }
@@ -52,7 +45,7 @@
 
 - (void)actionShareButton:(UIBarButtonItem *)button
 {
-    NSArray *activityItems = @[@"당신이 사랑하고 싶은 반려동물의 이야기, 유기동물을 입양해보는건 어떠세요?", _petVO.detailVO.image];
+    NSArray *activityItems = @[@"당신이 사랑하고 싶은 반려동물의 이야기, 유기동물을 입양해보는건 어떠세요?", _petVO.image];
     
     UIActivityViewController *activityController = [[UIActivityViewController alloc] initWithActivityItems:activityItems
                                                                                      applicationActivities:nil];
@@ -66,25 +59,15 @@
     [self.navigationItem setTitleView:titleView];
 }
 
-- (void)loadPetDataAtIndex:(NSInteger)index
-{
-    _petIndex = index;
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadComplete) name:kLPNotificationPetDetailRequestComplete object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadFail) name:kLPNotificationPetDetailRequestFail object:nil];
-    [_petDAO requestPetDetailDataAtIndex:index];
-}
-
 - (void)loadComplete
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     
-    self.petVO = [_petDAO getPetDetailDataAtIndex:_petIndex];
     LPPetDetailView *view = (LPPetDetailView *)self.view;
-    view.photoView.image = _petVO.detailVO.image;
-    view.typeLabel.text = _petVO.detailVO.type;
+    view.photoView.image = _petVO.image;
+    view.typeLabel.text = _petVO.petType;
     view.dayLabel.text = _petVO.leftDay;
-    view.detailLabel.text = [NSString stringWithFormat:@"%@ / %@일 발견", _petVO.detailVO.detail, _petVO.detailVO.date];
+    view.detailLabel.text = [NSString stringWithFormat:@"%@ / %@일 발견", _petVO.detail, _petVO.date];
 }
 
 - (void)loadFail

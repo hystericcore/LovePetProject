@@ -45,7 +45,7 @@
     [self createPetSearchButton];
     [self createPullToRefresh];
     
-    [_petDAO resetPetDataSourceWithPetKind:nil location:nil];
+    [_petDAO resetPetDataSource];
 }
 
 #pragma mark - Pet DAO Notification
@@ -110,7 +110,7 @@
 - (void)pullToRefresh:(ISRefreshControl *)refreshControl
 {
     [self.quiltView beginUpdates];
-    [_petDAO resetPetDataSourceWithPetKind:nil location:nil];
+    [_petDAO resetPetDataSource];
 }
 
 #pragma mark - QuiltViewControllerDataSource
@@ -134,39 +134,27 @@
     }
     
     LPPetVO *vo = [_petDataSource objectAtIndex:indexPath.row];
+    [vo resetLeftDay];
     cell.photoView.image = vo.thumbnail;
-    cell.typeLabel.text = vo.type;
-    
-    NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
-    [dateFormat setDateFormat:@"yyyy-MM-dd"];
-    
-    NSDate *nowDate = [[NSDate alloc] init];
-    NSDate *dayDate = [dateFormat dateFromString:vo.date];
-    
-    NSInteger leftDay = 10 - [self daysBetweenDate:dayDate andDate:nowDate];
-    
-    vo.leftDay = [NSString stringWithFormat:@"day-%d", leftDay];
-    
     cell.dayLabel.text = vo.leftDay;
     cell.detailLabel.text = vo.detail;
     
+    NSString *petType = vo.petType;
+    petType = [petType stringByReplacingOccurrencesOfString:@"[개]" withString:@""];
+    petType = [petType stringByReplacingOccurrencesOfString:@"[고양이]" withString:@"고양이"];
+    petType = [petType stringByReplacingOccurrencesOfString:@"[기타축종]" withString:@""];
+    petType = [petType stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    cell.petTypeLabel.text = petType;
+    
     return cell;
-}
-
-- (NSInteger)daysBetweenDate:(NSDate *)firstDate andDate:(NSDate *)secondDate
-{
-    NSCalendar *currentCalendar = [NSCalendar currentCalendar];
-    NSDateComponents *components = [currentCalendar components: NSDayCalendarUnit fromDate: firstDate toDate: secondDate options: 0];
-    NSInteger days = [components day];
-    return days;
 }
 
 #pragma mark - TMQuiltViewDelegate
 
 - (void)quiltView:(TMQuiltView *)quiltView didSelectCellAtIndexPath:(NSIndexPath *)indexPath
 {
-    LPPetDetailViewController *viewController = [[LPPetDetailViewController alloc] initWithPetDAO:_petDAO];
-    [viewController loadPetDataAtIndex:indexPath.row];
+    LPPetVO *petVO = [_petDataSource objectAtIndex:indexPath.row];
+    LPPetDetailViewController *viewController = [[LPPetDetailViewController alloc] initWithPetVO:petVO];
     [self.navigationController pushViewController:viewController animated:YES];
 }
 

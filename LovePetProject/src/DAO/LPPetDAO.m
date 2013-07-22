@@ -9,34 +9,20 @@
 #import "LPPetDAO.h"
 #import "AFNetworking.h"
 #import "LPPetVO.h"
-#import "LPPetDetailVO.h"
 
 NSString *const kLPNotificationPetListUpdateComplete = @"petDAO.listUpdateComplete";
 NSString *const kLPNotificationPetListUpdateFail = @"petDAO.listUpdateFail";
 NSString *const kLPNotificationPetListRequestFail = @"petDAO.listRequestFail";
 
-NSString *const kLPNotificationPetDetailRequestComplete = @"petDAO.detailRequestComplete";
-NSString *const kLPNotificationPetDetailRequestFail = @"petDAO.detailRequestFail";
-
 NSString *const kLPPetKindCat = @"422400";
 NSString *const kLPPetKindDog = @"417000";
 
-NSString *const kLPPetQueryURL = @"http://lovepetproject.appspot.com/petList?";
-NSString *const kLPPetQueryStartDate = @"startDate";
-NSString *const kLPPetQueryEndDate = @"endDate";
-NSString *const kLPPetQueryPetKind = @"petKind";
-NSString *const kLPPetQueryPageCount = @"pageCount";
-NSString *const kLPPetQueryLocation = @"location";
+NSString *const kLPPetQueryURL = @"https://api.baas.io/19afa818-e241-11e2-9011-06530c0000b4/3a653992-e241-11e2-9011-06530c0000b4/pets?ql=select * order by created desc";
 
-NSInteger const kLPPetQueryPageCountDefault = 1;
-NSInteger const kLPPetQueryDateCountFromNowDefault = 0;
+NSString *const kLPPetQueryCursor = @"cursor";
 
-NSString *const kLPPetListJSONKey = @"petList";
-NSInteger const kLPPetListCount = 10;
-
-NSString *const kLPPetDetailQueryURL = @"http://lovepetproject.appspot.com/petDetail";
-
-NSString *const kLPPetDetailJSONKey = @"petDetail";
+NSString *const kLPPetListKey = @"entities";
+NSString *const kLPPetCursorKey = @"cursor";
 
 @interface LPPetDAO ()
 @property (nonatomic, strong) NSMutableArray *petDataSource;
@@ -54,79 +40,18 @@ NSString *const kLPPetDetailJSONKey = @"petDetail";
     return self;
 }
 
-- (void)resetPetDataSourceWithPetKind:(NSString *)petKind location:(NSString *)location
+- (void)resetPetDataSource
 {
+    _currentQueryCursor = nil;
+    _stopQuery = NO;
     self.petDataSource = [[NSMutableArray alloc] initWithCapacity:0];
-    _currentPetKind = petKind;
-#warning 위치를 서울로 고정.
-    _currentLocation = @"6110000";
-    _currentDateCountFromNow = kLPPetQueryDateCountFromNowDefault;
-    _currentPageCount = kLPPetQueryPageCountDefault;
-    _pageEnd = NO;
     
     [self requestPetList];
 }
 
 - (void)requestNextPetList
 {
-    if (_pageEnd) {
-        _currentDateCountFromNow++;
-        _currentPageCount = kLPPetQueryPageCountDefault;
-    } else {
-        _currentPageCount++;
-    }
-    
-    _pageEnd = NO;
-    
     [self requestPetList];
-}
-
-- (void)requestPetDetailDataAtIndex:(NSUInteger)index
-{
-    LPPetVO *petVO = [_petDataSource objectAtIndex:index];
-    
-    if (petVO.detailVO != nil) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:kLPNotificationPetDetailRequestComplete object:self];
-        return;
-    }
-    
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:kLPPetDetailQueryURL]];
-    NSString *postString = [NSString stringWithFormat:@"linkSrc=%@", petVO.linkSrc];
-    [request setHTTPMethod:@"POST"];
-    [request setHTTPBody:[postString dataUsingEncoding:NSUTF8StringEncoding]];
-    
-    void (^success)(NSURLRequest *, NSHTTPURLResponse *, id) = ^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
-        NSDictionary *petDetailData = [JSON objectForKey:kLPPetDetailJSONKey];
-        
-        if (petDetailData != nil) {
-            LPPetDetailVO *detailVO = [[LPPetDetailVO alloc] initWithProperties:petDetailData];
-            [petVO setDetailVO:detailVO];
-            
-            NSURL *imageURL = [NSURL URLWithString:detailVO.imageSrc];
-            NSURLRequest *request = [NSURLRequest requestWithURL:imageURL];
-            
-            UIImage *(^imageProcessingBlock)(UIImage *image) = ^UIImage *(UIImage *image) {
-                return image;
-            };
-            void (^success)(NSURLRequest *, NSHTTPURLResponse *, UIImage *) = ^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
-                detailVO.image = image;
-                [[NSNotificationCenter defaultCenter] postNotificationName:kLPNotificationPetDetailRequestComplete object:self];
-            };
-            void (^failure)(NSURLRequest *, NSHTTPURLResponse *, NSError *) = ^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
-                petVO.detailVO = nil;
-                [[NSNotificationCenter defaultCenter] postNotificationName:kLPNotificationPetDetailRequestFail object:self];
-            };
-            
-            [[AFImageRequestOperation imageRequestOperationWithRequest:request imageProcessingBlock:imageProcessingBlock success:success failure:failure] start];
-        } else {
-            [[NSNotificationCenter defaultCenter] postNotificationName:kLPNotificationPetDetailRequestFail object:self];
-        }
-    };
-    void (^failure)(NSURLRequest *, NSHTTPURLResponse *, NSError *, id) = ^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:kLPNotificationPetDetailRequestFail object:self];
-    };
-    
-    [[AFJSONRequestOperation JSONRequestOperationWithRequest:request success:success failure:failure] start];
 }
 
 - (NSArray *)getPetDataSource
@@ -134,36 +59,26 @@ NSString *const kLPPetDetailJSONKey = @"petDetail";
     return [NSArray arrayWithArray:_petDataSource];
 }
 
-- (id)getPetDetailDataAtIndex:(NSUInteger)index
-{
-    if (index >= _petDataSource.count) {
-        return nil;
-    }
-    
-    return [_petDataSource objectAtIndex:index];
-}
-
 #pragma mark - Private Methods
 
 - (void)requestPetList
 {
-    NSDate *nowDate = [self createQueryDate:_currentDateCountFromNow];
-    NSURL *url = [self createPetURLStringWithStartDate:[self convertDateToQueryString:nowDate]
-                                               endDate:[self convertDateToQueryString:nowDate]
-                                               petKind:_currentPetKind
-                                             pageCount:[NSNumber numberWithInteger:_currentPageCount]
-                                              location:_currentLocation];
+    if (_stopQuery) {
+        return;
+    }
+    
+    NSURL *url = [self createPetURL];
     NSURLRequest *request = [NSURLRequest requestWithURL:url];
     
     void (^success)(NSURLRequest *, NSHTTPURLResponse *, id) = ^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
-        NSArray *petList = [JSON objectForKey:kLPPetListJSONKey];
+        NSArray *petList = [JSON objectForKey:kLPPetListKey];
+        _currentQueryCursor = [[JSON objectForKey:kLPPetCursorKey] copy];
         
-        if (petList.count > 0) {
-            [self updatePetDataSource:petList];
-        } else {
-            _currentDateCountFromNow++;
-            [self requestPetList];
+        if (petList.count < 10) {
+            _stopQuery = YES;
         }
+        
+        [self updatePetDataSource:petList];
     };
     void (^failure)(NSURLRequest *, NSHTTPURLResponse *, NSError *, id) = ^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
         [[NSNotificationCenter defaultCenter] postNotificationName:kLPNotificationPetListRequestFail object:self];
@@ -174,10 +89,6 @@ NSString *const kLPPetDetailJSONKey = @"petDetail";
 
 - (void)updatePetDataSource:(NSArray *)petList
 {
-    if (petList.count < kLPPetListCount) {
-        _pageEnd = YES;
-    }
-    
     __block int requestCount = petList.count;
     
     for (NSDictionary *petDic in petList) {
@@ -233,18 +144,14 @@ NSString *const kLPPetDetailJSONKey = @"petDetail";
     return [dateFormat stringFromDate:date];
 }
 
-- (NSURL *)createPetURLStringWithStartDate:(NSString *)startDate endDate:(NSString *)endDate petKind:(NSString *)petKind pageCount:(NSNumber *)pageCount location:(NSString *)location
+- (NSURL *)createPetURL
 {
     NSMutableString *string = [[NSMutableString alloc] initWithCapacity:0];
     [string appendString:kLPPetQueryURL];
     
-    if (startDate != nil) [string appendString:[NSString stringWithFormat:@"%@=%@&", kLPPetQueryStartDate, startDate]];
-    if (endDate != nil) [string appendString:[NSString stringWithFormat:@"%@=%@&", kLPPetQueryEndDate, endDate]];
-    if (petKind != nil) [string appendString:[NSString stringWithFormat:@"%@=%@&", kLPPetQueryPetKind, petKind]];
-    if (pageCount != nil) [string appendString:[NSString stringWithFormat:@"%@=%@&", kLPPetQueryPageCount, pageCount]];
-    if (location != nil) [string appendString:[NSString stringWithFormat:@"%@=%@", kLPPetQueryLocation, location]];
+    if (_currentQueryCursor != nil) [string appendString:[NSString stringWithFormat:@"&%@=%@&", kLPPetQueryCursor, _currentQueryCursor]];
     
-    return [NSURL URLWithString:string];
+    return [NSURL URLWithString:[string stringByAddingPercentEscapesUsingEncoding:NSASCIIStringEncoding]];
 }
 
 @end

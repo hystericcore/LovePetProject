@@ -10,17 +10,32 @@
 @class LPPetDetailVO;
 @interface LPPetVO : NSObject
 - (id)initWithProperties:(NSDictionary *)properties;
+- (void)resetLeftDay;
+// baas entity id
+@property (nonatomic, strong) NSString *uuid;
+
+// list view
 @property (nonatomic, strong) NSString *thumbnailSrc;
 @property (nonatomic, strong) UIImage *thumbnail;
 @property (nonatomic, strong) NSString *linkSrc;
-@property (nonatomic, strong) NSString *boardID;
-@property (nonatomic, strong) NSString *date;
 @property (nonatomic, strong) NSString *leftDay;
-@property (nonatomic, strong) NSString *type;
+
+// detail view
+@property (nonatomic, strong) NSString *boardID;
+@property (nonatomic, strong) NSString *petType;
 @property (nonatomic, strong) NSString *sex;
 @property (nonatomic, strong) NSString *foundLocation;
+@property (nonatomic, strong) NSString *date;
 @property (nonatomic, strong) NSString *detail;
 @property (nonatomic, strong) NSString *state;
-@property (nonatomic, strong) NSString *tel;
-@property (nonatomic, strong) LPPetDetailVO *detailVO;
+@property (nonatomic, strong) NSString *imageSrc;
+@property (nonatomic, strong) UIImage *image;
+@property (nonatomic, strong) NSString *color;
+@property (nonatomic, strong) NSString *year;
+@property (nonatomic, strong) NSString *weight;
+@property (nonatomic, strong) NSString *neutralize;
+@property (nonatomic, strong) NSString *districtOffice;
+@property (nonatomic, strong) NSString *centerName;
+@property (nonatomic, strong) NSString *centerTel;
+@property (nonatomic, strong) NSString *centerLocation;
 @end

@@ -16,7 +16,7 @@ const CGFloat kLPPetQuiltViewDayPoint = 10;
 @implementation LPPetQuiltViewCell
 @synthesize photoView = _photoView;
 @synthesize typeView = _typeView;
-@synthesize typeLabel = _typeLabel;
+@synthesize petTypeLabel = _typeLabel;
 @synthesize dayLabel = _dayLabel;
 @synthesize detailLabel = _detailLabel;
 
@@ -55,7 +55,7 @@ const CGFloat kLPPetQuiltViewDayPoint = 10;
 
 - (void)createTypeLabel
 {
-    self.typeLabel = [[UILabel alloc] init];
+    self.petTypeLabel = [[UILabel alloc] init];
     _typeLabel.backgroundColor = [UIColor clearColor];
     _typeLabel.textColor = RGB(23, 23, 23);
     _typeLabel.font = [UIFont boldSystemFontOfSize:kLPPetQuiltViewTypePoint];
