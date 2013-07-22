@@ -34,7 +34,6 @@
 		FB16EC3817910C7B007A352C /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FB16EC3717910C7B007A352C /* QuartzCore.framework */; };
 		FB6655F81792D91F00B4C3F2 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FB6655F71792D91F00B4C3F2 /* SystemConfiguration.framework */; };
 		FB6655FA1792D93600B4C3F2 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FB6655F91792D93600B4C3F2 /* MobileCoreServices.framework */; };
-		FB6655FD1792E7E500B4C3F2 /* LPPetDetailVO.m in Sources */ = {isa = PBXBuildFile; fileRef = FB6655FC1792E7E500B4C3F2 /* LPPetDetailVO.m */; };
 		FB8CD9771787CFFB00D2ED21 /* LPRootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FB8CD9731787CFFB00D2ED21 /* LPRootViewController.m */; };
 		FB8CD9791787D06500D2ED21 /* libxml2.2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = FB8CD9781787D06500D2ED21 /* libxml2.2.dylib */; };
 		FB8CD97D1787D75700D2ED21 /* LPLeftListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FB8CD97C1787D75700D2ED21 /* LPLeftListViewController.m */; };
@@ -139,8 +138,6 @@
 		FB16EC3717910C7B007A352C /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		FB6655F71792D91F00B4C3F2 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		FB6655F91792D93600B4C3F2 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
-		FB6655FB1792E7E500B4C3F2 /* LPPetDetailVO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LPPetDetailVO.h; sourceTree = "<group>"; };
-		FB6655FC1792E7E500B4C3F2 /* LPPetDetailVO.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPPetDetailVO.m; sourceTree = "<group>"; };
 		FB8CD9721787CFFB00D2ED21 /* LPRootViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LPRootViewController.h; sourceTree = "<group>"; };
 		FB8CD9731787CFFB00D2ED21 /* LPRootViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPRootViewController.m; sourceTree = "<group>"; };
 		FB8CD9781787D06500D2ED21 /* libxml2.2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.2.dylib; path = usr/lib/libxml2.2.dylib; sourceTree = SDKROOT; };
@@ -286,8 +283,6 @@
 			children = (
 				FB13A4011792813C00218055 /* LPPetVO.h */,
 				FB13A4021792813C00218055 /* LPPetVO.m */,
-				FB6655FB1792E7E500B4C3F2 /* LPPetDetailVO.h */,
-				FB6655FC1792E7E500B4C3F2 /* LPPetDetailVO.m */,
 			);
 			name = VO;
 			sourceTree = "<group>";
@@ -664,7 +659,6 @@
 				FB8CD97D1787D75700D2ED21 /* LPLeftListViewController.m in Sources */,
 				FB8CD9A61787E78F00D2ED21 /* TMQuiltView.m in Sources */,
 				FB13A3FE17927DC900218055 /* AFXMLRequestOperation.m in Sources */,
-				FB6655FD1792E7E500B4C3F2 /* LPPetDetailVO.m in Sources */,
 				FB8CD9911787DF4800D2ED21 /* LPPetQuiltViewController.m in Sources */,
 				FB16EC3017910B6F007A352C /* UITableView+ISRefreshControl.m in Sources */,
 				FB13A3F917927DC900218055 /* AFImageRequestOperation.m in Sources */,
