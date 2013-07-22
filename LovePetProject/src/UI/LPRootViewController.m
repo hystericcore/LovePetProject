@@ -46,10 +46,9 @@
 
 - (void)createMainNavController
 {
-    [[UINavigationBar appearance] setBackgroundImage:[UIImage imageNamed:@"navbar_background.png"]
-                                       forBarMetrics:UIBarMetricsDefault];
-    
     self.navController = [[UINavigationController alloc] init];
+    [_navController.navigationBar setBackgroundImage:[UIImage imageNamed:@"navbar_background.png"]
+                                       forBarMetrics:UIBarMetricsDefault];
     [_navController.view setFrame:self.view.bounds];
     [_navController.view.layer setMasksToBounds:NO];
     [_navController.view.layer setShadowRadius:5];

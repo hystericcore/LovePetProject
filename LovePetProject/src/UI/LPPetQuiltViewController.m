@@ -82,9 +82,7 @@
     [listButton setImage:[UIImage imageNamed:@"nav_button_search.png"] forState:UIControlStateNormal];
     [listButton addTarget:self action:@selector(actionSearchButton:) forControlEvents:UIControlEventTouchUpInside];
     [listButton sizeToFit];
-    
     self.searchButton = [[UIBarButtonItem alloc] initWithCustomView:listButton];
-    
     [self.navigationItem setRightBarButtonItem:_searchButton];
 }
 
