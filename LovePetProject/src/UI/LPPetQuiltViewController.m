@@ -17,6 +17,8 @@
 #import "LPPetQuiltViewCell.h"
 #import "LPPetDetailViewController.h"
 
+#import "LPSearchViewController.h"
+
 @implementation LPPetQuiltViewController
 
 - (id)initWithPetDAO:(LPPetDAO *)petDAO
@@ -42,6 +44,8 @@
     [super viewDidLoad];
     
     [self.view setBackgroundColor:[UIColor whiteColor]];
+    [self.quiltView setScrollsToTop:YES];
+    
     [self createPetSearchButton];
     [self createPullToRefresh];
     
@@ -55,6 +59,7 @@
     [self.quiltView beginUpdates];
     self.petDataSource = [_petDAO getPetDataSource];
     [self.quiltView endUpdates];
+    
     [_refreshControl endRefreshing];
 }
 
@@ -63,6 +68,7 @@
     [self.quiltView beginUpdates];
     self.petDataSource = [_petDAO getPetDataSource];
     [self.quiltView endUpdates];
+    
     [_refreshControl endRefreshing];
 }
 
@@ -88,14 +94,24 @@
 
 - (void)actionSearchButton:(UIBarButtonItem *)button
 {
-    UIViewController *viewController = [[UIViewController alloc] init];
-    [viewController.view setFrame:CGRectMake(0, 0, 320, CGRectGetHeight(self.view.bounds) / 4 * 3)];
+    LPSearchViewController *viewController = [[LPSearchViewController alloc] initWithPetDAO:_petDAO];
     [viewController.view setBackgroundColor:[UIColor whiteColor]];
-    [self presentSemiViewController:viewController
-                        withOptions:@{KNSemiModalOptionKeys.pushParentBack    : @(YES),
+    
+    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:viewController];
+    [navController.view setFrame:CGRectMake(0, 0, CGRectGetWidth(self.view.bounds), kLPSearchViewHeight)];
+    [navController setNavigationBarHidden:YES];
+    [self presentSemiViewController:navController
+                        withOptions:@{KNSemiModalOptionKeys.pushParentBack    : @(NO),
                                       KNSemiModalOptionKeys.animationDuration : @(0.5),
                                       KNSemiModalOptionKeys.shadowOpacity     : @(0.3),
                                       }];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dismissSearchView:) name:kLPNotificationSearchViewDismiss object:nil];
+}
+
+- (void)dismissSearchView:(NSNotification *)notification
+{
+    [self dismissSemiModalView];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kLPNotificationSearchViewDismiss object:nil];
 }
 
 #pragma mark - Pull To Refresh Methods

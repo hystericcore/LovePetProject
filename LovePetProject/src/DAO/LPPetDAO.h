@@ -18,6 +18,7 @@ extern NSString *const kLPPetKindDog;
     NSString *_currentQueryCursor;
     BOOL _stopQuery;
 }
+@property (nonatomic, strong) NSOperationQueue *operationQueue;
 - (void)resetPetDataSource;
 - (void)requestNextPetList;
 - (NSArray *)getPetDataSource;

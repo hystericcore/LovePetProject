@@ -36,6 +36,8 @@ NSString *const kLPPetCursorKey = @"cursor";
     self = [super init];
     if (self) {
         [[AFNetworkActivityIndicatorManager sharedManager] setEnabled:YES];
+        self.operationQueue = [[NSOperationQueue alloc] init];
+        [_operationQueue setMaxConcurrentOperationCount:3];
     }
     return self;
 }
@@ -70,7 +72,7 @@ NSString *const kLPPetCursorKey = @"cursor";
     NSURL *url = [self createPetURL];
     NSURLRequest *request = [NSURLRequest requestWithURL:url];
     
-    void (^success)(NSURLRequest *, NSHTTPURLResponse *, id) = ^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
+    void (^success)() = ^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
         NSArray *petList = [JSON objectForKey:kLPPetListKey];
         _currentQueryCursor = [[JSON objectForKey:kLPPetCursorKey] copy];
         
@@ -80,11 +82,12 @@ NSString *const kLPPetCursorKey = @"cursor";
         
         [self updatePetDataSource:petList];
     };
-    void (^failure)(NSURLRequest *, NSHTTPURLResponse *, NSError *, id) = ^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
+    void (^failure)() = ^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
         [[NSNotificationCenter defaultCenter] postNotificationName:kLPNotificationPetListRequestFail object:self];
     };
     
-    [[AFJSONRequestOperation JSONRequestOperationWithRequest:request success:success failure:failure] start];
+    AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:success failure:failure];
+    [_operationQueue addOperation:operation];
 }
 
 - (void)updatePetDataSource:(NSArray *)petList
@@ -98,21 +101,22 @@ NSString *const kLPPetCursorKey = @"cursor";
         NSURL *thumbnailURL = [NSURL URLWithString:vo.thumbnailSrc];
         NSURLRequest *request = [NSURLRequest requestWithURL:thumbnailURL];
         
-        UIImage *(^imageProcessingBlock)(UIImage *image) = ^UIImage *(UIImage *image) {
+        UIImage *(^imageProcessingBlock)() = ^UIImage *(UIImage *image) {
             return image;
         };
-        void (^success)(NSURLRequest *, NSHTTPURLResponse *, UIImage *) = ^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
+        void (^success)() = ^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
             vo.thumbnail = image;
             
             if (--requestCount == 0)
                 [[NSNotificationCenter defaultCenter] postNotificationName:kLPNotificationPetListUpdateComplete object:self];
         };
-        void (^failure)(NSURLRequest *, NSHTTPURLResponse *, NSError *) = ^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
+        void (^failure)() = ^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
             [_petDataSource removeObject:vo];
             [[NSNotificationCenter defaultCenter] postNotificationName:kLPNotificationPetListUpdateFail object:self];
         };
         
-        [[AFImageRequestOperation imageRequestOperationWithRequest:request imageProcessingBlock:imageProcessingBlock success:success failure:failure] start];
+        AFImageRequestOperation *operation = [AFImageRequestOperation imageRequestOperationWithRequest:request imageProcessingBlock:imageProcessingBlock success:success failure:failure];
+        [_operationQueue addOperation:operation];
     }
 }
 

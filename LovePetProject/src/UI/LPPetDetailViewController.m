@@ -10,6 +10,8 @@
 #import "LPPetDetailView.h"
 #import "LPPetVO.h"
 
+#import "UIImageView+AFNetworking.h"
+
 @implementation LPPetDetailViewController
 
 - (id)initWithPetVO:(LPPetVO *)petVO
@@ -35,6 +37,8 @@
     
     [self createShareButton];
     [self createTitleImageView];
+    
+    [self loadDetailContents];
 }
 
 - (void)createShareButton
@@ -59,10 +63,34 @@
     [self.navigationItem setTitleView:titleView];
 }
 
+- (void)loadDetailContents
+{
+    if (_petVO.image) {
+        [self loadComplete];
+        return;
+    }
+    
+    NSURL *imageURL = [NSURL URLWithString:_petVO.imageSrc];
+    NSURLRequest *request = [NSURLRequest requestWithURL:imageURL];
+    
+    UIImage *(^imageProcessingBlock)() = ^UIImage *(UIImage *image) {
+        return image;
+    };
+    void (^success)() = ^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
+        _petVO.image = image;
+        [self loadComplete];
+    };
+    void (^failure)() = ^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
+        [self loadFail];
+    };
+    
+    AFImageRequestOperation *operation = [AFImageRequestOperation imageRequestOperationWithRequest:request imageProcessingBlock:imageProcessingBlock success:success failure:failure];
+    NSOperationQueue *operationQueue = [[NSOperationQueue alloc] init];
+    [operationQueue addOperation:operation];
+}
+
 - (void)loadComplete
 {
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-    
     LPPetDetailView *view = (LPPetDetailView *)self.view;
     view.photoView.image = _petVO.image;
     view.typeLabel.text = _petVO.petType;

@@ -14,4 +14,5 @@
 @property (nonatomic, strong) UIBarButtonItem *searchButton;
 @property (nonatomic, strong) ISRefreshControl *refreshControl;
 @property (nonatomic, strong) LPPetDAO *petDAO;
+@property (nonatomic, strong) UIActivityIndicatorView *indicator;
 @end

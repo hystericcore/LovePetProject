@@ -16,6 +16,7 @@
     
     [self.tableView setBackgroundColor:RGB(88, 89, 91)];
     [self.tableView setSeparatorColor:RGB(128, 128, 128)];
+    [self.tableView setScrollsToTop:NO];
     [self reloadListData];
 }
 
@@ -34,11 +35,11 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *leftListIdentifier = @"LeftListIdentifier";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:leftListIdentifier];
+    static NSString *CellIdentifier = @"Cell";
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     
     if (cell == nil) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:leftListIdentifier];
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
         [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
     }
     

@@ -19,8 +19,31 @@
         
         for (NSString *key in propertyNames) {
             NSString *value = [properties objectForKey:key];
-            [self performSelector:[self setterForPropertyName:key] withObject:value];
+            SEL keySetter = [self setterForPropertyName:key];
+            
+            if ([self respondsToSelector:keySetter])
+                [self performSelector:keySetter withObject:value];
         }
+        /*
+        self.thumbnailSrc = [properties objectForKey:@"thumbnailSrc"];
+        self.linkSrc = [properties objectForKey:@"linkSrc"];
+        
+        self.boardID = [properties objectForKey:@"boardID"];
+        self.petType = [properties objectForKey:@"petType"];
+        self.sex = [properties objectForKey:@"sex"];
+        self.foundLocation = [properties objectForKey:@"foundLocation"];
+        self.date = [properties objectForKey:@"date"];
+        self.detail = [properties objectForKey:@"detail"];
+        self.state = [properties objectForKey:@"state"];
+        self.imageSrc = [properties objectForKey:@"imageSrc"];
+        self.color = [properties objectForKey:@"color"];
+        self.year = [properties objectForKey:@"year"];
+        self.weight = [properties objectForKey:@"weight"];
+        self.districtOffice = [properties objectForKey:@"districtOffice"];
+        self.centerName = [properties objectForKey:@"centerName"];
+        self.centerTel = [properties objectForKey:@"centerTel"];
+        self.centerLocation = [properties objectForKey:@"centerLocation"];
+         */
     }
     return self;
 }
@@ -32,6 +55,11 @@
     
     NSDate *nowDate = [[NSDate alloc] init];
     NSDate *dayDate = [dateFormat dateFromString:self.date];
+    
+    if (nowDate == nil || dayDate == nil) {
+        NSLog(@"date nil");
+        return;
+    }
     
     NSInteger leftDay = 10 - [self daysBetweenDate:dayDate andDate:nowDate];
     

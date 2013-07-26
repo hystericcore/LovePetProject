@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D98273EA179ED8B900B54D21 /* LPSearchOptionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D98273E9179ED8B900B54D21 /* LPSearchOptionViewController.m */; };
 		D9CCD90217957799000621DE /* LPSearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D9CCD90117957799000621DE /* LPSearchViewController.m */; };
-		D9CCD90617957819000621DE /* LPSearchView.m in Sources */ = {isa = PBXBuildFile; fileRef = D9CCD90517957819000621DE /* LPSearchView.m */; };
 		D9DE1C63178EFE8C00ADDC10 /* nav_button_list.png in Resources */ = {isa = PBXBuildFile; fileRef = D9DE1C62178EFE8C00ADDC10 /* nav_button_list.png */; };
 		D9DE1C66178F048100ADDC10 /* nav_button_search.png in Resources */ = {isa = PBXBuildFile; fileRef = D9DE1C64178F048100ADDC10 /* nav_button_search.png */; };
 		D9DE1C67178F048100ADDC10 /* nav_button_search@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D9DE1C65178F048100ADDC10 /* nav_button_search@2x.png */; };
@@ -43,16 +43,6 @@
 		FB8CD9A61787E78F00D2ED21 /* TMQuiltView.m in Sources */ = {isa = PBXBuildFile; fileRef = FB8CD9A11787E78F00D2ED21 /* TMQuiltView.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		FB8CD9A71787E78F00D2ED21 /* TMQuiltViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FB8CD9A31787E78F00D2ED21 /* TMQuiltViewCell.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		FB8CD9A81787E78F00D2ED21 /* TMQuiltViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FB8CD9A51787E78F00D2ED21 /* TMQuiltViewController.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
-		FB8CD9B51787EBD300D2ED21 /* 1.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = FB8CD9AB1787EBD300D2ED21 /* 1.jpeg */; };
-		FB8CD9B61787EBD300D2ED21 /* 10.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = FB8CD9AC1787EBD300D2ED21 /* 10.jpeg */; };
-		FB8CD9B71787EBD300D2ED21 /* 2.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = FB8CD9AD1787EBD300D2ED21 /* 2.jpeg */; };
-		FB8CD9B81787EBD300D2ED21 /* 3.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = FB8CD9AE1787EBD300D2ED21 /* 3.jpeg */; };
-		FB8CD9B91787EBD300D2ED21 /* 4.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = FB8CD9AF1787EBD300D2ED21 /* 4.jpeg */; };
-		FB8CD9BA1787EBD300D2ED21 /* 5.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = FB8CD9B01787EBD300D2ED21 /* 5.jpeg */; };
-		FB8CD9BB1787EBD300D2ED21 /* 6.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = FB8CD9B11787EBD300D2ED21 /* 6.jpeg */; };
-		FB8CD9BC1787EBD300D2ED21 /* 7.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = FB8CD9B21787EBD300D2ED21 /* 7.jpeg */; };
-		FB8CD9BD1787EBD300D2ED21 /* 8.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = FB8CD9B31787EBD300D2ED21 /* 8.jpeg */; };
-		FB8CD9BE1787EBD300D2ED21 /* 9.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = FB8CD9B41787EBD300D2ED21 /* 9.jpeg */; };
 		FB8CD9C41787ED1700D2ED21 /* LPPetQuiltViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FB8CD9C31787ED1700D2ED21 /* LPPetQuiltViewCell.m */; };
 		FB8CD9C91787F36F00D2ED21 /* KiteOne-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FB8CD9C71787F36F00D2ED21 /* KiteOne-Regular.ttf */; };
 		FB8CD9CA1787F36F00D2ED21 /* OFL.txt in Resources */ = {isa = PBXBuildFile; fileRef = FB8CD9C81787F36F00D2ED21 /* OFL.txt */; };
@@ -92,10 +82,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		D98273E8179ED8B900B54D21 /* LPSearchOptionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LPSearchOptionViewController.h; sourceTree = "<group>"; };
+		D98273E9179ED8B900B54D21 /* LPSearchOptionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPSearchOptionViewController.m; sourceTree = "<group>"; };
 		D9CCD90017957799000621DE /* LPSearchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LPSearchViewController.h; sourceTree = "<group>"; };
 		D9CCD90117957799000621DE /* LPSearchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPSearchViewController.m; sourceTree = "<group>"; };
-		D9CCD90417957819000621DE /* LPSearchView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LPSearchView.h; sourceTree = "<group>"; };
-		D9CCD90517957819000621DE /* LPSearchView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPSearchView.m; sourceTree = "<group>"; };
 		D9DE1C62178EFE8C00ADDC10 /* nav_button_list.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = nav_button_list.png; sourceTree = "<group>"; };
 		D9DE1C64178F048100ADDC10 /* nav_button_search.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = nav_button_search.png; sourceTree = "<group>"; };
 		D9DE1C65178F048100ADDC10 /* nav_button_search@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "nav_button_search@2x.png"; sourceTree = "<group>"; };
@@ -158,16 +148,6 @@
 		FB8CD9A31787E78F00D2ED21 /* TMQuiltViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TMQuiltViewCell.m; sourceTree = "<group>"; };
 		FB8CD9A41787E78F00D2ED21 /* TMQuiltViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TMQuiltViewController.h; sourceTree = "<group>"; };
 		FB8CD9A51787E78F00D2ED21 /* TMQuiltViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TMQuiltViewController.m; sourceTree = "<group>"; };
-		FB8CD9AB1787EBD300D2ED21 /* 1.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 1.jpeg; sourceTree = "<group>"; };
-		FB8CD9AC1787EBD300D2ED21 /* 10.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 10.jpeg; sourceTree = "<group>"; };
-		FB8CD9AD1787EBD300D2ED21 /* 2.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 2.jpeg; sourceTree = "<group>"; };
-		FB8CD9AE1787EBD300D2ED21 /* 3.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 3.jpeg; sourceTree = "<group>"; };
-		FB8CD9AF1787EBD300D2ED21 /* 4.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 4.jpeg; sourceTree = "<group>"; };
-		FB8CD9B01787EBD300D2ED21 /* 5.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 5.jpeg; sourceTree = "<group>"; };
-		FB8CD9B11787EBD300D2ED21 /* 6.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 6.jpeg; sourceTree = "<group>"; };
-		FB8CD9B21787EBD300D2ED21 /* 7.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 7.jpeg; sourceTree = "<group>"; };
-		FB8CD9B31787EBD300D2ED21 /* 8.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 8.jpeg; sourceTree = "<group>"; };
-		FB8CD9B41787EBD300D2ED21 /* 9.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 9.jpeg; sourceTree = "<group>"; };
 		FB8CD9C21787ED1700D2ED21 /* LPPetQuiltViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LPPetQuiltViewCell.h; sourceTree = "<group>"; };
 		FB8CD9C31787ED1700D2ED21 /* LPPetQuiltViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPPetQuiltViewCell.m; sourceTree = "<group>"; };
 		FB8CD9C71787F36F00D2ED21 /* KiteOne-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "KiteOne-Regular.ttf"; sourceTree = "<group>"; };
@@ -244,8 +224,8 @@
 			children = (
 				D9CCD90017957799000621DE /* LPSearchViewController.h */,
 				D9CCD90117957799000621DE /* LPSearchViewController.m */,
-				D9CCD90417957819000621DE /* LPSearchView.h */,
-				D9CCD90517957819000621DE /* LPSearchView.m */,
+				D98273E8179ED8B900B54D21 /* LPSearchOptionViewController.h */,
+				D98273E9179ED8B900B54D21 /* LPSearchOptionViewController.m */,
 			);
 			name = Search;
 			sourceTree = "<group>";
@@ -418,26 +398,8 @@
 			children = (
 				FB8CD9CB1787F65D00D2ED21 /* UI */,
 				FB8CD9C51787F36A00D2ED21 /* fonts */,
-				FB8CD9AA1787EBD300D2ED21 /* images */,
 			);
 			path = resources;
-			sourceTree = "<group>";
-		};
-		FB8CD9AA1787EBD300D2ED21 /* images */ = {
-			isa = PBXGroup;
-			children = (
-				FB8CD9AB1787EBD300D2ED21 /* 1.jpeg */,
-				FB8CD9AC1787EBD300D2ED21 /* 10.jpeg */,
-				FB8CD9AD1787EBD300D2ED21 /* 2.jpeg */,
-				FB8CD9AE1787EBD300D2ED21 /* 3.jpeg */,
-				FB8CD9AF1787EBD300D2ED21 /* 4.jpeg */,
-				FB8CD9B01787EBD300D2ED21 /* 5.jpeg */,
-				FB8CD9B11787EBD300D2ED21 /* 6.jpeg */,
-				FB8CD9B21787EBD300D2ED21 /* 7.jpeg */,
-				FB8CD9B31787EBD300D2ED21 /* 8.jpeg */,
-				FB8CD9B41787EBD300D2ED21 /* 9.jpeg */,
-			);
-			path = images;
 			sourceTree = "<group>";
 		};
 		FB8CD9C51787F36A00D2ED21 /* fonts */ = {
@@ -629,16 +591,12 @@
 			files = (
 				FB9C42F81788CC7D0094505E /* FacebookSDKResources.bundle in Resources */,
 				FB8CD9CE1787F65D00D2ED21 /* navbar_background.png in Resources */,
-				FB8CD9BD1787EBD300D2ED21 /* 8.jpeg in Resources */,
-				FB8CD9B61787EBD300D2ED21 /* 10.jpeg in Resources */,
-				FB8CD9BC1787EBD300D2ED21 /* 7.jpeg in Resources */,
 				FB9AE9181788A5290071DA68 /* nav_button_sendto.png in Resources */,
 				FB8CD9C91787F36F00D2ED21 /* KiteOne-Regular.ttf in Resources */,
 				FB9AE9101788A3520071DA68 /* back_button_background.png in Resources */,
 				FB9AE9141788A37F0071DA68 /* back_button_selected_background.png in Resources */,
 				FB8CD9D91787FFF400D2ED21 /* navbar_lovepet@2x.png in Resources */,
 				FB9AE9191788A5290071DA68 /* nav_button_sendto@2x.png in Resources */,
-				FB8CD9B51787EBD300D2ED21 /* 1.jpeg in Resources */,
 				FB8CD9CF1787F65D00D2ED21 /* navbar_background@2x.png in Resources */,
 				FB9AE9151788A37F0071DA68 /* back_button_selected_background@2x.png in Resources */,
 				FB9AE90117889BEA0071DA68 /* nav_button_list@2x.png in Resources */,
@@ -648,19 +606,13 @@
 				FBC974511787CF2400915EB5 /* Default.png in Resources */,
 				FB16EC2B17910B6F007A352C /* ISRefresgControlIcon@2x.png in Resources */,
 				FBC974531787CF2400915EB5 /* Default@2x.png in Resources */,
-				FB8CD9BA1787EBD300D2ED21 /* 5.jpeg in Resources */,
-				FB8CD9BB1787EBD300D2ED21 /* 6.jpeg in Resources */,
-				FB8CD9B81787EBD300D2ED21 /* 3.jpeg in Resources */,
 				FBC974551787CF2400915EB5 /* Default-568h@2x.png in Resources */,
 				D9DE1C67178F048100ADDC10 /* nav_button_search@2x.png in Resources */,
-				FB8CD9B91787EBD300D2ED21 /* 4.jpeg in Resources */,
 				D9DE1C63178EFE8C00ADDC10 /* nav_button_list.png in Resources */,
 				FB16EC2A17910B6F007A352C /* ISRefresgControlIcon.png in Resources */,
-				FB8CD9B71787EBD300D2ED21 /* 2.jpeg in Resources */,
 				FB9AE9211788BC6C0071DA68 /* icon-512.png in Resources */,
 				FB8CD9D81787FFF400D2ED21 /* navbar_lovepet.png in Resources */,
 				D9DE1C66178F048100ADDC10 /* nav_button_search.png in Resources */,
-				FB8CD9BE1787EBD300D2ED21 /* 9.jpeg in Resources */,
 				FB9AE9231788BC9D0071DA68 /* icon@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -681,7 +633,6 @@
 				FB16EC3017910B6F007A352C /* UITableView+ISRefreshControl.m in Sources */,
 				FB13A3F917927DC900218055 /* AFImageRequestOperation.m in Sources */,
 				FB13A3F717927DC900218055 /* AFHTTPClient.m in Sources */,
-				D9CCD90617957819000621DE /* LPSearchView.m in Sources */,
 				FB13A3FD17927DC900218055 /* AFURLConnectionOperation.m in Sources */,
 				FB13A4031792813C00218055 /* LPPetVO.m in Sources */,
 				FB13A3FC17927DC900218055 /* AFPropertyListRequestOperation.m in Sources */,
@@ -701,6 +652,7 @@
 				FB16EC2C17910B6F007A352C /* ISGumView.m in Sources */,
 				FB16EC3117910B6F007A352C /* UITableViewController+ISRefreshControl.m in Sources */,
 				FBC9744F1787CF2400915EB5 /* LPAppDelegate.m in Sources */,
+				D98273EA179ED8B900B54D21 /* LPSearchOptionViewController.m in Sources */,
 				FB16EC2E17910B6F007A352C /* ISScalingActivityIndicatorView.m in Sources */,
 				FB16EC3617910C5E007A352C /* ISMethodSwizzling.m in Sources */,
 				FB16EC2F17910B6F007A352C /* UIColor+ISRefreshControl.m in Sources */,
@@ -793,7 +745,7 @@
 				GCC_PREFIX_HEADER = "LovePetProject/LovePetProject-Prefix.pch";
 				HEADER_SEARCH_PATHS = "${SDKROOT}/usr/include/libxml2";
 				INFOPLIST_FILE = "LovePetProject/LovePetProject-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				OTHER_LDFLAGS = "-lsqlite3.0";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
@@ -813,7 +765,7 @@
 				GCC_PREFIX_HEADER = "LovePetProject/LovePetProject-Prefix.pch";
 				HEADER_SEARCH_PATHS = "${SDKROOT}/usr/include/libxml2";
 				INFOPLIST_FILE = "LovePetProject/LovePetProject-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				OTHER_LDFLAGS = "-lsqlite3.0";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
