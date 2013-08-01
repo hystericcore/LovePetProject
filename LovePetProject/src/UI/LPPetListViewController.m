@@ -20,19 +20,18 @@
 
 #import "LPSearchViewController.h"
 
+@interface LPPetListViewController ()
+@property (nonatomic, assign) kLPPetListViewMode mode;
+@end
+
 @implementation LPPetListViewController
 
-- (id)init
+- (id)initWithViewMode:(kLPPetListViewMode)mode
 {
     self = [super init];
     if (self) {
         self.petDAO = [LPPetDAO sharedInstance];
-        
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(petListReset:) name:kLPNotificationPetListReset object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(petListUpdateComplete:) name:kLPNotificationPetListUpdateComplete object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(petListReturnZero:) name:kLPNotificationPetListReturnZero object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(petListUpdateFail:) name:kLPNotificationPetListUpdateFail object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(petListRequestFail:) name:kLPNotificationPetListRequestFail object:nil];
+        self.mode = mode;
     }
     return self;
 }
@@ -42,11 +41,32 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
+- (void)loadPetDataSource
+{
+    switch (self.mode) {
+        case kLPPetListViewModeRemote:
+            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(petListReset:) name:kLPNotificationPetListReset object:nil];
+            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(petListUpdateComplete:) name:kLPNotificationPetListUpdateComplete object:nil];
+            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(petListReturnZero:) name:kLPNotificationPetListReturnZero object:nil];
+            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(petListUpdateFail:) name:kLPNotificationPetListUpdateFail object:nil];
+            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(petListRequestFail:) name:kLPNotificationPetListRequestFail object:nil];
+            
+            [_petDAO resetRemotePetDataSource];
+            break;
+            
+        case kLPPetListViewModeClip:
+            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(clipPetListReset:) name:kLPNotificationClipPetListReset object:nil];
+            
+            [self clipPetListReset:nil];
+            break;
+    }
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     
-    [self.view setBackgroundColor:COLOR_GRAYWHITE];
+    [self.view setBackgroundColor:[UIColor whiteColor]];
     
     [self createNavTitleView];
     [self createLeftViewButton];
@@ -55,7 +75,7 @@
     [self createPetListView];
     [self createPullToRefresh];
     
-    [_petDAO resetPetDataSource];
+    [self loadPetDataSource];
 }
 
 #pragma mark - Pet DAO Notification
@@ -68,13 +88,13 @@
 
 - (void)petListUpdateComplete:(NSNotification *)notification
 {
-    self.petDataSource = [_petDAO getPetDataSource];
+    self.petDataSource = [_petDAO getRemotePetDataSource];
     [self hideIndicator];
 }
 
 - (void)petListReturnZero:(NSNotification *)notification
 {
-    self.petDataSource = [_petDAO getPetDataSource];
+    self.petDataSource = [_petDAO getRemotePetDataSource];
     [self hideIndicator];
     
     if (_petDataSource.count == 0) {
@@ -97,6 +117,12 @@
     
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"알림" message:@"데이터를 가져오는데 실패했습니다! 네트워크를 확인해 주세요." delegate:self cancelButtonTitle:@"닫기" otherButtonTitles:nil];
     [alert show];
+}
+
+- (void)clipPetListReset:(NSNotification *)notification
+{
+    self.petDataSource = [_petDAO getClipPetDataSource];
+    [_petListView reloadData];
 }
 
 #pragma mark - Acitivity Indicator Methods
@@ -135,6 +161,9 @@
 
 - (void)createPetSearchButton
 {
+    if (_mode == kLPPetListViewModeClip)
+        return;
+    
     UIButton *listButton = [[UIButton alloc] init];
     [listButton setImage:[UIImage imageNamed:@"nav_button_search.png"] forState:UIControlStateNormal];
     [listButton addTarget:self action:@selector(actionSearchButton:) forControlEvents:UIControlEventTouchUpInside];
@@ -173,7 +202,7 @@
     _petListView.delegate = self;
     _petListView.collectionViewDataSource = self;
     _petListView.collectionViewDelegate = self;
-    _petListView.backgroundColor = COLOR_GRAYWHITE;
+    _petListView.backgroundColor = [UIColor whiteColor];
     _petListView.autoresizingMask = ~UIViewAutoresizingNone;
     _petListView.numColsPortrait = 2;
     [self.view addSubview:_petListView];
@@ -183,6 +212,9 @@
 
 - (void)createPullToRefresh
 {
+    if (_mode == kLPPetListViewModeClip)
+        return;
+    
     self.refreshControl = [[ISRefreshControl alloc] init];
     [_petListView addSubview:_refreshControl];
     [_refreshControl addTarget:self action:@selector(pullToRefresh:) forControlEvents:UIControlEventValueChanged];
@@ -190,7 +222,7 @@
 
 - (void)pullToRefresh:(ISRefreshControl *)refreshControl
 {
-    [_petDAO resetPetDataSource];
+    [_petDAO resetRemotePetDataSource];
 }
 
 #pragma mark - PSCollectionViewDataSource
@@ -246,17 +278,6 @@
 - (Class)collectionView:(PSCollectionView *)collectionView cellClassForRowAtIndex:(NSInteger)index
 {
     return [LPPetListCell class];
-}
-
-#pragma mark - ScrollViewDelegate
-
-// called when scroll view grinds to a halt
-- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
-{
-    int bottomEdge = floorf(scrollView.contentOffset.y + scrollView.frame.size.height);
-    int contentHeight = floorf(scrollView.contentSize.height) - 30;
-    if (bottomEdge >= contentHeight)
-        [_petDAO requestNextPetList];
 }
 
 @end

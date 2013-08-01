@@ -9,6 +9,7 @@
 #import "LPPetDetailViewController.h"
 #import "LPDetailViewDetailCell.h"
 #import "LPDetailViewMapCell.h"
+#import "LPPetDAO.h"
 #import "LPPetVO.h"
 
 #import "UIView+Utils.h"
@@ -128,14 +129,12 @@ static NSString *MapCellIdentifer = @"MapCell";
     UIButton *clipButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, footerViewWidth, footerViewHeight)];
     [clipButton addTarget:self action:@selector(actionClipButton:) forControlEvents:UIControlEventTouchUpInside];
     [clipButton setBackgroundColor:[UIColor clearColor]];
-    [clipButton setTitle:@"관심목록에 추가하기" forState:UIControlStateNormal];
-    [clipButton setTitleColor:COLOR_LIGHT_TEXT forState:UIControlStateNormal];
-    [clipButton setTitleColor:COLOR_TEXT forState:UIControlStateHighlighted];
-    [clipButton.titleLabel setFont:[UIFont systemFontOfSize:18]];
     
     [clipButton drawLineFrom:CGPointMake(8, 0) to:CGPointMake(footerViewWidth - 8, 0) lineWidth:0.5f color:COLOR_SINGLE_LINE_ALPHA4 dotted:NO];
     
     [_tableView setTableFooterView:clipButton];
+    
+    [self resetClipButtonState];
 }
 
 - (void)createShareButton
@@ -146,7 +145,7 @@ static NSString *MapCellIdentifer = @"MapCell";
 
 - (void)actionShareButton:(id)sender
 {
-    NSArray *activityItems = @[@"당신이 사랑하고 싶은 반려동물의 이야기, 유기동물을 입양해보는건 어떠세요?", _petVO.image];
+    NSArray *activityItems = @[@"주인을 애타게 찾고있는 아이들이 있어요! 러브팻에서 작성되었습니다.", _petVO.image];
     
     UIActivityViewController *activityController = [[UIActivityViewController alloc] initWithActivityItems:activityItems
                                                                                      applicationActivities:nil];
@@ -158,7 +157,43 @@ static NSString *MapCellIdentifer = @"MapCell";
 
 - (void)actionClipButton:(id)sender
 {
+    NSString *message;
     
+    if ([[LPPetDAO sharedInstance] isClipPetDataExist:_petVO]) {
+        [[LPPetDAO sharedInstance] removeClipPetData:_petVO];
+        message = @"관심목록에서 삭제하였습니다";
+    } else {
+        [[LPPetDAO sharedInstance] setClipPetData:_petVO];
+        message = @"관심목록에 추가하였습니다.";
+    }
+    
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"알림" message:message delegate:self cancelButtonTitle:@"닫기" otherButtonTitles:nil];
+    [alert show];
+    
+    [self resetClipButtonState];
+}
+
+- (void)resetClipButtonState
+{
+    UIButton *clipButton = (UIButton *)_tableView.tableFooterView;
+    
+    if ([[LPPetDAO sharedInstance] isClipPetDataExist:_petVO]) {
+        [UIView animateWithDuration:0.5f
+                         animations:^{
+                             [clipButton setTitle:@"관심목록에서 삭제하기" forState:UIControlStateNormal];
+                             [clipButton setTitleColor:COLOR_RED forState:UIControlStateNormal];
+                             [clipButton setTitleColor:COLOR_BROWN forState:UIControlStateHighlighted];
+                             [clipButton.titleLabel setFont:[UIFont boldSystemFontOfSize:18]];
+                         }];
+    } else {
+        [UIView animateWithDuration:0.5f
+                         animations:^{
+                             [clipButton setTitle:@"관심목록에 추가하기" forState:UIControlStateNormal];
+                             [clipButton setTitleColor:COLOR_LIGHT_TEXT forState:UIControlStateNormal];
+                             [clipButton setTitleColor:COLOR_TEXT forState:UIControlStateHighlighted];
+                             [clipButton.titleLabel setFont:[UIFont systemFontOfSize:18]];
+                         }];
+    }
 }
 
 #pragma mark - UITableViewDataSource

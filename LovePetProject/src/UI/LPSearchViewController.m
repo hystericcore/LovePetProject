@@ -140,7 +140,7 @@ NSInteger const kLPSearchViewHeight = 72 * 4;
     
     [userDefaults synchronize];
     
-    [_petDAO resetPetDataSource];
+    [_petDAO resetRemotePetDataSource];
 }
 
 - (void)postSearchViewDismiss

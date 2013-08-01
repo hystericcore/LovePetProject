@@ -106,6 +106,15 @@
                                  color:COLOR_SINGLE_LINE_ALPHA3
                                 dotted:YES];
     }
+    
+    UITapGestureRecognizer *recognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(actionTel:)];
+    recognizer.delegate = self;
+    
+    UILabel *lastLabel = [_detailContentLabels objectAtIndex:_detailContentLabels.count - 1];
+    [lastLabel setFont:[UIFont boldSystemFontOfSize:14]];
+    [lastLabel setTextColor:COLOR_LIGHT_BLUE];
+    [lastLabel addGestureRecognizer:recognizer];
+    [lastLabel setUserInteractionEnabled:YES];
 }
 
 - (void)setDetailContentLabelsText:(NSArray *)texts
@@ -117,6 +126,24 @@
         
         UILabel *contentLabel = [_detailContentLabels objectAtIndex:i];
         [contentLabel setText:[texts objectAtIndex:i]];
+    }
+}
+
+- (void)actionTel:(UITapGestureRecognizer *)recognizer
+{
+    UILabel *label = (UILabel *)recognizer.view;
+    
+    if (label.text.length > 0) {
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"통화하기" message:label.text delegate:self cancelButtonTitle:@"취소" otherButtonTitles:@"확인", nil];
+        [alertView show];
+    }
+}
+
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
+{
+    if (buttonIndex != alertView.cancelButtonIndex) {
+        NSString *queryString = [NSString stringWithFormat:@"tel://%@", alertView.message];
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:queryString]];
     }
 }
 

@@ -24,7 +24,7 @@
 {
     [super viewDidLoad];
     
-    [self.view setBackgroundColor:COLOR_GRAYWHITE];
+    [self.view setBackgroundColor:[UIColor whiteColor]];
     
     [self createLeftViewButton];
     [self createNavTitleView];

@@ -8,8 +8,15 @@
 
 #import <UIKit/UIKit.h>
 #import "PSCollectionView.h"
+
+typedef enum {
+    kLPPetListViewModeRemote = 0,
+    kLPPetListViewModeClip,
+} kLPPetListViewMode;
+
 @class ISRefreshControl, LPPetDAO;
 @interface LPPetListViewController : UIViewController <PSCollectionViewDataSource, PSCollectionViewDelegate, UIScrollViewDelegate>
+- (id)initWithViewMode:(kLPPetListViewMode)mode;
 @property (nonatomic, strong) PSCollectionView *petListView;
 @property (nonatomic, strong) NSArray *petDataSource;
 @property (nonatomic, strong) UIBarButtonItem *searchButton;

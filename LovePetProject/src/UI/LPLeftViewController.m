@@ -12,11 +12,15 @@
 #import "LPPetListViewController.h"
 #import "LPLoginViewController.h"
 
+#import "UIView+Utils.h"
+
 typedef enum {
     kLPListViewController = 0,
     kLPClipViewController,
     kLPLoginViewController,
 } kLPViewControllerType;
+
+NSInteger const kLPLeftViewCellHeight = 46;
 
 @implementation LPLeftViewController
 
@@ -25,11 +29,16 @@ typedef enum {
     [super viewDidLoad];
     [self.revealController setMinimumWidth:250.0f maximumWidth:324.0f forViewController:self];
     
-    [self.tableView setBackgroundColor:RGB(88, 89, 91)];
+    [self.tableView setBackgroundColor:[UIColor colorWithWhite:0.2f alpha:1.0f]];
     [self.tableView setSeparatorColor:RGB(128, 128, 128)];
     [self.tableView setScrollsToTop:NO];
+    [self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
     
-    self.controllerNames = @[@"유기동물 리스트", @"관심동물 리스트", @"설정"];
+    UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(self.view.bounds), 44)];
+    [headerView setBackgroundColor:[UIColor clearColor]];
+    [self.tableView setTableHeaderView:headerView];
+    
+    self.controllerNames = @[@"보호동물 목록", @"관심동물 목록"];
     self.controllerList = [[NSMutableDictionary alloc] initWithCapacity:0];
 }
 
@@ -48,11 +57,20 @@ typedef enum {
     if (cell == nil) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
         [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
+        
+        CGFloat cellHeight = kLPLeftViewCellHeight - 1;
+        CGFloat cellWidth = CGRectGetWidth(tableView.bounds);
+        [cell setBackgroundColor:[UIColor colorWithWhite:0.2f alpha:1.0f]];
+        [cell drawLineFrom:CGPointMake(0, cellHeight - 1) to:CGPointMake(cellWidth, cellHeight - 1) lineWidth:1 color:[UIColor colorWithWhite:0.1f alpha:1.0f] dotted:NO];
+        [cell drawLineFrom:CGPointMake(0, cellHeight) to:CGPointMake(cellWidth, cellHeight) lineWidth:1 color:[UIColor colorWithWhite:0.3f alpha:1.0f] dotted:NO];
+        
+        CGRect textLabelFrame = cell.textLabel.frame;
+        textLabelFrame.origin.x += 20;
+        [cell.textLabel setFrame:textLabelFrame];
+        [cell.textLabel setTextColor:COLOR_GRAYWHITE];
     }
     
     [cell.textLabel setText:[_controllerNames objectAtIndex:indexPath.row]];
-    [cell.textLabel setTextColor:[UIColor whiteColor]];
-    
     return cell;
 }
 
@@ -87,15 +105,11 @@ typedef enum {
     if (rootViewController == nil) {
         switch (index) {
             case kLPListViewController:
-                rootViewController = [[LPPetListViewController alloc] init];
+                rootViewController = [[LPPetListViewController alloc] initWithViewMode:kLPPetListViewModeRemote];
                 break;
                 
             case kLPClipViewController:
-                rootViewController = [[LPLoginViewController alloc] init];
-                break;
-                
-            case kLPLoginViewController:
-                rootViewController = [[LPLoginViewController alloc] init];
+                rootViewController = [[LPPetListViewController alloc] initWithViewMode:kLPPetListViewModeClip];
                 break;
         }
     }
@@ -109,11 +123,9 @@ typedef enum {
     return indexPath;
 }
 
-/*
- - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
- {
- 
- }
- */
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return kLPLeftViewCellHeight;
+}
 
 @end

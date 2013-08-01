@@ -18,8 +18,13 @@
         NSMutableArray *propertyNames = [self getPropertyNames];
         
         for (NSString *key in propertyNames) {
-            NSString *value = [[properties objectForKey:key] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-            value = [value stringByReplacingOccurrencesOfString:@"  " withString:@" "];
+            id value = [properties objectForKey:key];
+            
+            if ([value isKindOfClass:[NSString class]]) {
+                value = [value stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+                value = [value stringByReplacingOccurrencesOfString:@"  " withString:@" "];
+            }
+            
             SEL keySetter = [self setterForPropertyName:key];
             
 #pragma clang diagnostic push
@@ -27,29 +32,48 @@
             [self performSelector:keySetter withObject:value];
 #pragma clang diagnostic pop
         }
-        /*
-        self.thumbnailSrc = [properties objectForKey:@"thumbnailSrc"];
-        self.linkSrc = [properties objectForKey:@"linkSrc"];
-        
-        self.boardID = [properties objectForKey:@"boardID"];
-        self.petType = [properties objectForKey:@"petType"];
-        self.sex = [properties objectForKey:@"sex"];
-        self.foundLocation = [properties objectForKey:@"foundLocation"];
-        self.date = [properties objectForKey:@"date"];
-        self.detail = [properties objectForKey:@"detail"];
-        self.state = [properties objectForKey:@"state"];
-        self.imageSrc = [properties objectForKey:@"imageSrc"];
-        self.color = [properties objectForKey:@"color"];
-        self.year = [properties objectForKey:@"year"];
-        self.weight = [properties objectForKey:@"weight"];
-        self.districtOffice = [properties objectForKey:@"districtOffice"];
-        self.centerName = [properties objectForKey:@"centerName"];
-        self.centerTel = [properties objectForKey:@"centerTel"];
-        self.centerLocation = [properties objectForKey:@"centerLocation"];
-         */
     }
     return self;
 }
+
+#pragma mark - Key archived
+
+- (id)initWithCoder:(NSCoder *)aCoder
+{
+    self = [super init];
+    if (self)
+    {
+        NSMutableArray *propertyNames = [self getPropertyNames];
+        
+        for (NSString *key in propertyNames) {
+            NSString *value = [aCoder decodeObjectForKey:key];
+            
+            SEL keySetter = [self setterForPropertyName:key];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+            [self performSelector:keySetter withObject:value];
+#pragma clang diagnostic pop
+        }
+    }
+    
+    return self;
+}
+
+
+- (void)encodeWithCoder:(NSCoder *)aCoder
+{
+    NSMutableArray *propertyNames = [self getPropertyNames];
+    
+    for (NSString *key in propertyNames) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+        id object = [self performSelector:NSSelectorFromString(key)];
+#pragma clang diagnostic pop
+        [aCoder encodeObject:object forKey:key];
+    };
+}
+
+#pragma mark - Public Methods
 
 - (void)resetLeftDay
 {
@@ -119,5 +143,26 @@
     NSInteger days = [components day];
     return days;
 }
+
+/*
+ self.thumbnailSrc = [properties objectForKey:@"thumbnailSrc"];
+ self.linkSrc = [properties objectForKey:@"linkSrc"];
+ 
+ self.boardID = [properties objectForKey:@"boardID"];
+ self.petType = [properties objectForKey:@"petType"];
+ self.sex = [properties objectForKey:@"sex"];
+ self.foundLocation = [properties objectForKey:@"foundLocation"];
+ self.date = [properties objectForKey:@"date"];
+ self.detail = [properties objectForKey:@"detail"];
+ self.state = [properties objectForKey:@"state"];
+ self.imageSrc = [properties objectForKey:@"imageSrc"];
+ self.color = [properties objectForKey:@"color"];
+ self.year = [properties objectForKey:@"year"];
+ self.weight = [properties objectForKey:@"weight"];
+ self.districtOffice = [properties objectForKey:@"districtOffice"];
+ self.centerName = [properties objectForKey:@"centerName"];
+ self.centerTel = [properties objectForKey:@"centerTel"];
+ self.centerLocation = [properties objectForKey:@"centerLocation"];
+ */
 
 @end

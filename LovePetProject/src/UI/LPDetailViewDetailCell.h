@@ -11,6 +11,6 @@
 
 #define LPDetailViewDetailCellHeight kCellHeaderMargin + kCellHeaderHeight + kCellHeight * kDetailCellNumber + kCellFooterHeight + kCellMargin
 
-@interface LPDetailViewDetailCell : UITableViewCell
+@interface LPDetailViewDetailCell : UITableViewCell <UIAlertViewDelegate>
 - (void)setDetailContentLabelsText:(NSArray *)texts;
 @end

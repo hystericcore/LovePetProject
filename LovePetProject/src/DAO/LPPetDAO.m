@@ -7,14 +7,17 @@
 //
 
 #import "LPPetDAO.h"
-#import "AFNetworking.h"
 #import "LPPetVO.h"
+
+#import "AFNetworking.h"
 
 NSString *const kLPNotificationPetListReset = @"petDAO.listReset";
 NSString *const kLPNotificationPetListUpdateComplete = @"petDAO.listUpdateComplete";
 NSString *const kLPNotificationPetListReturnZero = @"petDAO.listReturnZero";
 NSString *const kLPNotificationPetListUpdateFail = @"petDAO.listUpdateFail";
 NSString *const kLPNotificationPetListRequestFail = @"petDAO.listRequestFail";
+
+NSString *const kLPNotificationClipPetListReset = @"petDAO.clipListReset";
 
 NSString *const kLPPetKindCat = @"422400";
 NSString *const kLPPetKindDog = @"417000";
@@ -35,6 +38,9 @@ NSString *const kLPPetQueryCursor = @"cursor";
 
 NSString *const kLPPetListKey = @"entities";
 NSString *const kLPPetCursorKey = @"cursor";
+
+NSString *const kLPLocalRootPath = @"lovepet";
+NSString *const kLPLocalDomainClip = @"clip";
 
 @interface LPPetDAO ()
 @property (nonatomic, strong) NSMutableArray *petDataSource;
@@ -64,7 +70,7 @@ NSString *const kLPPetCursorKey = @"cursor";
     return self;
 }
 
-- (void)resetPetDataSource
+- (void)resetRemotePetDataSource
 {
     self.currentQueryCursor = nil;
     self.stopQuery = NO;
@@ -79,7 +85,7 @@ NSString *const kLPPetCursorKey = @"cursor";
     [self requestPetList];
 }
 
-- (NSArray *)getPetDataSource
+- (NSArray *)getRemotePetDataSource
 {
     return [NSArray arrayWithArray:self.petDataSource];
 }
@@ -235,6 +241,105 @@ NSString *const kLPPetCursorKey = @"cursor";
         [query appendFormat:@"&%@=%@", kLPPetQueryCursor, _currentQueryCursor];
     
     return [NSURL URLWithString:[query stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+}
+
+#pragma mark - Pet Clip Methods
+
+- (NSArray *)getClipPetDataSource
+{
+    NSArray *archivedObjects = [self loadAllObjectInDomain:kLPLocalDomainClip];
+    
+    if (!archivedObjects)
+        return nil;
+    
+    NSMutableArray *clipPetDataSouce = [NSMutableArray arrayWithCapacity:0];
+    
+    for (NSString *fileName in archivedObjects) {
+        [clipPetDataSouce addObject:[NSKeyedUnarchiver unarchiveObjectWithFile:[self makePathForFile:fileName domain:kLPLocalDomainClip]]];
+    }
+    
+    NSArray *sortedArray = [clipPetDataSouce sortedArrayUsingComparator:^(LPPetVO *firstVO, LPPetVO *secondVO) {
+        if ([firstVO.created doubleValue] > [secondVO.created doubleValue])
+            return (NSComparisonResult)NSOrderedAscending;
+        else if ([firstVO.created doubleValue] < [secondVO.created doubleValue])
+            return (NSComparisonResult)NSOrderedDescending;
+        else
+            return (NSComparisonResult)NSOrderedSame;
+    }];
+    
+    return sortedArray;
+}
+
+- (BOOL)isClipPetDataExist:(LPPetVO *)petVO
+{
+    if ([self getLocalArchivedObject:petVO.uuid domain:kLPLocalDomainClip])
+        return YES;
+    
+    return NO;
+}
+
+- (BOOL)setClipPetData:(LPPetVO *)petVO
+{
+    BOOL result = [self setLocalArchivedObject:petVO toFile:petVO.uuid domain:kLPLocalDomainClip];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kLPNotificationClipPetListReset object:nil];
+    return result;
+}
+
+- (void)removeClipPetData:(LPPetVO *)petVO
+{
+    [self removeLocalArchivedObject:petVO.uuid domain:kLPLocalDomainClip];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kLPNotificationClipPetListReset object:nil];
+}
+
+#pragma mark - NSKeyedArchiver Methods
+
+- (NSArray *)loadAllObjectInDomain:(NSString *)domain
+{
+    NSArray *pathArray = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
+    NSString *docDirectory = [pathArray objectAtIndex:0];
+    NSString *objectsPath = [NSString stringWithFormat:@"%@/%@/%@", docDirectory, kLPLocalRootPath, domain];
+    
+    NSError *error;
+    NSArray *objects = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:objectsPath error:&error];
+    
+    if (error) {
+        NSLog(@"%@", error);
+        return nil;
+    }
+    
+    return objects;
+}
+
+- (id)getLocalArchivedObject:(NSString *)fileName domain:(NSString *)domain
+{
+    return [NSKeyedUnarchiver unarchiveObjectWithFile:[self makePathForFile:fileName domain:domain]];
+}
+
+- (BOOL)setLocalArchivedObject:(id)object toFile:(NSString *)fileName domain:(NSString *)domain
+{
+    return [NSKeyedArchiver archiveRootObject:object toFile:[self makePathForFile:fileName domain:domain]];
+}
+
+- (void)removeLocalArchivedObject:(NSString *)fileName domain:(NSString *)domain
+{
+    [[NSFileManager defaultManager] removeItemAtPath:[self makePathForFile:fileName domain:domain] error:nil];
+}
+
+- (NSString *)makePathForFile:(NSString *)fileName domain:(NSString *)domain
+{
+    NSArray *pathArray = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
+    NSString *docDirectory = [pathArray objectAtIndex:0];
+    NSString *path = [NSString stringWithFormat:@"%@/%@/%@/%@", docDirectory, kLPLocalRootPath, domain, fileName];
+    [self makeDirectory:[path stringByDeletingLastPathComponent]];
+    return path;
+}
+
+- (void)makeDirectory:(NSString *)path
+{
+    if ([[NSFileManager defaultManager] fileExistsAtPath:path])
+        return;
+    
+    [[NSFileManager defaultManager] createDirectoryAtPath:path withIntermediateDirectories:YES attributes:nil error:NULL];
 }
 
 @end

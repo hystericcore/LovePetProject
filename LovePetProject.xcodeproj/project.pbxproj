@@ -572,7 +572,7 @@
 			isa = PBXGroup;
 			children = (
 				FB8CD97A1787D71300D2ED21 /* LeftViewController */,
-				FB8CD98E1787DEC400D2ED21 /* PetQuiltViewController */,
+				FB8CD98E1787DEC400D2ED21 /* PetListViewController */,
 				FB9AE8F617887AD60071DA68 /* PetDetailViewController */,
 				FB9AE91D1788ABB90071DA68 /* LoginViewController */,
 			);
@@ -588,7 +588,7 @@
 			name = LeftViewController;
 			sourceTree = "<group>";
 		};
-		FB8CD98E1787DEC400D2ED21 /* PetQuiltViewController */ = {
+		FB8CD98E1787DEC400D2ED21 /* PetListViewController */ = {
 			isa = PBXGroup;
 			children = (
 				D9CCD903179577B5000621DE /* Search */,
@@ -597,7 +597,7 @@
 				D9AD3BF817A7ED33000F46D1 /* LPPetListCell.h */,
 				D9AD3BF917A7ED33000F46D1 /* LPPetListCell.m */,
 			);
-			name = PetQuiltViewController;
+			name = PetListViewController;
 			sourceTree = "<group>";
 		};
 		FB8CD99E1787E78F00D2ED21 /* TMQuiltView */ = {

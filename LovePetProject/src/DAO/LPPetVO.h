@@ -14,6 +14,7 @@
 - (NSString *)getRemakePetType;
 // baas entity id
 @property (nonatomic, strong) NSString *uuid;
+@property (nonatomic, strong) NSNumber *created;
 
 // list view
 @property (nonatomic, strong) NSString *thumbnailSrc;

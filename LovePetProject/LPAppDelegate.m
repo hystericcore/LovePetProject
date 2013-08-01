@@ -20,7 +20,7 @@
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackTranslucent];
     
-    LPPetListViewController *petListController = [[LPPetListViewController alloc] init];
+    LPPetListViewController *petListController = [[LPPetListViewController alloc] initWithViewMode:kLPPetListViewModeRemote];
     UINavigationController *frontViewController = [[UINavigationController alloc] initWithRootViewController:petListController];
     [frontViewController.navigationBar setBackgroundImage:[UIImage imageNamed:@"navbar_background.png"] forBarMetrics:UIBarMetricsDefault];
     UIViewController *leftViewController = [[LPLeftViewController alloc] init];
