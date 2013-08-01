@@ -7,6 +7,7 @@
 //
 
 #import "LPLoginViewController.h"
+#import "UIViewController+Commons.h"
 
 @implementation LPLoginViewController
 
@@ -23,7 +24,10 @@
 {
     [super viewDidLoad];
     
-    [self.view setBackgroundColor:[UIColor whiteColor]];
+    [self.view setBackgroundColor:COLOR_GRAYWHITE];
+    
+    [self createLeftViewButton];
+    [self createNavTitleView];
 }
 
 @end

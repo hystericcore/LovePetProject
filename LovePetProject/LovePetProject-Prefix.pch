@@ -18,5 +18,20 @@
     #define RGBA(r, g, b, a) [UIColor colorWithRed:r/255.0 green:g/255.0 blue:b/255.0 alpha:a]
     #define NSEUCKRStringEncoding 0x80000000 + kCFStringEncodingDOSKorean
 
-#endif
+    #define COLOR_LOVEPET RGB(250, 67, 86)
 
+    #define COLOR_INDIGO_BLUE RGB(44, 62, 80)
+    #define COLOR_LIGHT_INDIGO_BLUE RGB(57, 80, 103)
+    #define COLOR_LIGHT_BLUE RGB(52, 152, 219)
+    #define COLOR_DEEP_BLUE RGB(41, 128, 185)
+
+    #define COLOR_WHITE RGB(235, 235, 235)
+    #define COLOR_GRAYWHITE RGB(241, 241, 241)
+
+    #define COLOR_TEXT RGB(51, 51, 51)
+    #define COLOR_LIGHT_TEXT RGB(153, 153, 153)
+
+    #define COLOR_SINGLE_LINE_ALPHA3 RGBA(153, 153, 153, 0.3f)
+    #define COLOR_SINGLE_LINE_ALPHA4 RGBA(153, 153, 153, 0.4f)
+    #define COLOR_SINGLE_LINE_ALPHA5 RGBA(153, 153, 153, 0.5f)
+#endif

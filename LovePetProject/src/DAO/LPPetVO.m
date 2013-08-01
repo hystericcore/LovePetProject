@@ -18,11 +18,14 @@
         NSMutableArray *propertyNames = [self getPropertyNames];
         
         for (NSString *key in propertyNames) {
-            NSString *value = [properties objectForKey:key];
+            NSString *value = [[properties objectForKey:key] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+            value = [value stringByReplacingOccurrencesOfString:@"  " withString:@" "];
             SEL keySetter = [self setterForPropertyName:key];
             
-            if ([self respondsToSelector:keySetter])
-                [self performSelector:keySetter withObject:value];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+            [self performSelector:keySetter withObject:value];
+#pragma clang diagnostic pop
         }
         /*
         self.thumbnailSrc = [properties objectForKey:@"thumbnailSrc"];
@@ -63,7 +66,21 @@
     
     NSInteger leftDay = 10 - [self daysBetweenDate:dayDate andDate:nowDate];
     
-    self.leftDay = [NSString stringWithFormat:@"day-%d", leftDay];
+    if (leftDay < 0 || leftDay > 10) {
+        leftDay = 0;
+    }
+    
+    self.leftDay = [NSString stringWithFormat:@"%d일", leftDay];
+}
+
+- (NSString *)getRemakePetType
+{
+    NSString *petType = [NSString stringWithString:self.petType];
+    petType = [petType stringByReplacingOccurrencesOfString:@"[개]" withString:@""];
+    petType = [petType stringByReplacingOccurrencesOfString:@"[고양이]" withString:@"고양이"];
+    petType = [petType stringByReplacingOccurrencesOfString:@"[기타축종]" withString:@""];
+    petType = [petType stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    return petType;
 }
 
 #pragma mark - private methods
@@ -88,8 +105,7 @@
 {
     NSMutableString *name = [property mutableCopy];
     NSString *firstChar = [name substringToIndex:1];
-    [name replaceCharactersInRange:NSMakeRange(0, 1)
-                        withString:[firstChar uppercaseString]];
+    [name replaceCharactersInRange:NSMakeRange(0, 1) withString:[firstChar uppercaseString]];
     [name insertString:@"set" atIndex:0];
     [name appendString:@":"];
     return NSSelectorFromString(name);
@@ -98,7 +114,8 @@
 - (NSInteger)daysBetweenDate:(NSDate *)firstDate andDate:(NSDate *)secondDate
 {
     NSCalendar *currentCalendar = [NSCalendar currentCalendar];
-    NSDateComponents *components = [currentCalendar components: NSDayCalendarUnit fromDate: firstDate toDate: secondDate options: 0];
+    NSDateComponents *components = [currentCalendar components:NSDayCalendarUnit fromDate:firstDate
+                                                        toDate:secondDate options:0];
     NSInteger days = [components day];
     return days;
 }

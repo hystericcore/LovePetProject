@@ -8,7 +8,9 @@
 
 #import <UIKit/UIKit.h>
 
+@class PKRevealController;
+
 @interface LPAppDelegate : UIResponder <UIApplicationDelegate>
+@property (nonatomic, strong, readwrite) PKRevealController *revealController;
 @property (nonatomic, strong) UIWindow *window;
-@property (nonatomic, strong) UIViewController *viewController;
 @end

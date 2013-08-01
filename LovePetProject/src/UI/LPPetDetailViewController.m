@@ -7,10 +7,25 @@
 //
 
 #import "LPPetDetailViewController.h"
-#import "LPPetDetailView.h"
+#import "LPDetailViewDetailCell.h"
+#import "LPDetailViewMapCell.h"
 #import "LPPetVO.h"
 
-#import "UIImageView+AFNetworking.h"
+#import "UIView+Utils.h"
+#import "UIViewController+Commons.h"
+#import "AFNetworking.h"
+
+NSString * const kLPDaumLocalAPIaddr2coord = @"http://apis.daum.net/local/geo/addr2coord?apikey=fcc4121ab324059bf37e6dccc20932b4adfd053a&output=json&q=";
+
+NSInteger const kLPDetailViewClipButtonHeight = 46;
+
+static NSString *DetailCellIdentifer = @"DetailCell";
+static NSString *MapCellIdentifer = @"MapCell";
+
+@interface LPPetDetailViewController ()
+@property (nonatomic, strong) LPDetailViewMapCell *mapCell;
+@property (nonatomic, strong) LPDetailViewDetailCell *detailCell;
+@end
 
 @implementation LPPetDetailViewController
 
@@ -19,26 +34,108 @@
     self = [super init];
     if (self) {
         self.petVO = petVO;
+        
+        // set detail cell
+        NSArray *texts = @[_petVO.sex, _petVO.year, _petVO.weight, _petVO.date, _petVO.foundLocation, _petVO.boardID, _petVO.centerName, _petVO.centerLocation, _petVO.centerTel];
+        self.detailCell = [[LPDetailViewDetailCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:DetailCellIdentifer];
+        [_detailCell setDetailContentLabelsText:texts];
+        
+        // set map cell
+        self.mapCell = [[LPDetailViewMapCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:MapCellIdentifer];
     }
     return self;
-}
-
-- (void)loadView
-{
-    UIView *view = [[LPPetDetailView alloc] init];
-    self.view = view;
-    [view sizeToFit];
-    [view setBackgroundColor:[UIColor whiteColor]];
 }
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    self.view.backgroundColor = COLOR_GRAYWHITE;
     
+    [self createTableView];
     [self createShareButton];
-    [self createTitleImageView];
+    [self createNavTitleView];
     
-    [self loadDetailContents];
+    [self loadPetImage];
+    [self loadCenterLocation];
+}
+
+#pragma mark - Create Methods
+
+- (void)createTableView
+{
+    CGRect tableViewFrame = self.view.bounds;
+    tableViewFrame.size.height -= 44;
+    
+    self.tableView = [[UITableView alloc] initWithFrame:tableViewFrame style:UITableViewStylePlain];
+    _tableView.dataSource = self;
+    _tableView.delegate = self;
+    _tableView.backgroundColor = COLOR_GRAYWHITE;
+    _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    [self.view addSubview:_tableView];
+    
+    // header view
+    CGFloat headerViewSize = CGRectGetWidth(self.view.frame);
+    CGFloat headerViewPadding = 15;
+    CGFloat headerViewPetTypePoint = 26;
+    CGFloat headerViewPetDetailPoint = 14;
+    CGFloat headerViewLabelMargin = 2;
+    
+    UIImageView *headerView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, headerViewSize, headerViewSize)];
+    [headerView setContentMode:UIViewContentModeScaleAspectFill];
+    [headerView setUserInteractionEnabled:YES];
+    [headerView setClipsToBounds:YES];
+    
+    UILabel *petTypeLabel = [[UILabel alloc] initWithFrame:CGRectMake(headerViewPadding,
+                                                                      headerViewSize -
+                                                                      headerViewPadding -
+                                                                      headerViewPetTypePoint -
+                                                                      headerViewPetDetailPoint -
+                                                                      headerViewLabelMargin,
+                                                                      headerViewSize - headerViewPadding * 2,
+                                                                      headerViewPetTypePoint)];
+    [petTypeLabel setText:[_petVO getRemakePetType]];
+    [petTypeLabel setTextColor:[UIColor whiteColor]];
+    [petTypeLabel setFont:[UIFont boldSystemFontOfSize:headerViewPetTypePoint]];
+    [petTypeLabel setBackgroundColor:[UIColor clearColor]];
+    [petTypeLabel setUserInteractionEnabled:NO];
+    [headerView addSubview:petTypeLabel];
+    
+    UILabel *petDetailLabel = [[UILabel alloc] initWithFrame:CGRectMake(headerViewPadding,
+                                                                        headerViewSize -
+                                                                        headerViewPadding -
+                                                                        headerViewPetDetailPoint,
+                                                                        headerViewSize - headerViewPadding * 2,
+                                                                        headerViewPetDetailPoint)];
+    [petDetailLabel setText:[NSString stringWithFormat:@"%@, %@에서 보호중", _petVO.districtOffice, _petVO.centerName]];
+    [petDetailLabel setTextColor:[UIColor whiteColor]];
+    [petDetailLabel setFont:[UIFont italicSystemFontOfSize:headerViewPetDetailPoint]];
+    [petDetailLabel setLineBreakMode:NSLineBreakByClipping];
+    [petDetailLabel setBackgroundColor:[UIColor clearColor]];
+    [petDetailLabel setUserInteractionEnabled:NO];
+//    [petDetailLabel setShadowColor:COLOR_LIGHT_TEXT];
+//    [petDetailLabel setShadowOffset:CGSizeMake(0.0, 0.0)];
+//    [petDetailLabel.layer setShadowRadius:3.0];
+//    [petDetailLabel.layer setShadowOpacity:0.7];
+//    [petDetailLabel setClipsToBounds:NO];
+    [headerView addSubview:petDetailLabel];
+    
+    [_tableView setTableHeaderView:headerView];
+    
+    // footer view
+    CGFloat footerViewWidth = CGRectGetWidth(self.view.frame);
+    CGFloat footerViewHeight = kLPDetailViewClipButtonHeight;
+    
+    UIButton *clipButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, footerViewWidth, footerViewHeight)];
+    [clipButton addTarget:self action:@selector(actionClipButton:) forControlEvents:UIControlEventTouchUpInside];
+    [clipButton setBackgroundColor:[UIColor clearColor]];
+    [clipButton setTitle:@"관심목록에 추가하기" forState:UIControlStateNormal];
+    [clipButton setTitleColor:COLOR_LIGHT_TEXT forState:UIControlStateNormal];
+    [clipButton setTitleColor:COLOR_TEXT forState:UIControlStateHighlighted];
+    [clipButton.titleLabel setFont:[UIFont systemFontOfSize:18]];
+    
+    [clipButton drawLineFrom:CGPointMake(8, 0) to:CGPointMake(footerViewWidth - 8, 0) lineWidth:0.5f color:COLOR_SINGLE_LINE_ALPHA4 dotted:NO];
+    
+    [_tableView setTableFooterView:clipButton];
 }
 
 - (void)createShareButton
@@ -47,7 +144,7 @@
     [self.navigationItem setRightBarButtonItem:shareButtonItem];
 }
 
-- (void)actionShareButton:(UIBarButtonItem *)button
+- (void)actionShareButton:(id)sender
 {
     NSArray *activityItems = @[@"당신이 사랑하고 싶은 반려동물의 이야기, 유기동물을 입양해보는건 어떠세요?", _petVO.image];
     
@@ -57,16 +154,67 @@
     [self presentViewController:activityController animated:YES completion:nil];
 }
 
-- (void)createTitleImageView
+#pragma mark - Action Methods
+
+- (void)actionClipButton:(id)sender
 {
-    UIImageView *titleView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"navbar_lovepet.png"]];
-    [self.navigationItem setTitleView:titleView];
+    
 }
 
-- (void)loadDetailContents
+#pragma mark - UITableViewDataSource
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+    return 2;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    if (section == 0) {
+        return 1;
+    } else if (section == 1) {
+        return 1;
+    }
+    
+    return 0;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSInteger section = indexPath.section;
+    UITableViewCell *cell;
+    
+    if (section == 0) {
+        cell = _detailCell;
+    } else if (section == 1) {
+        cell = _mapCell;
+        [self loadCenterLocationComplete];
+    }
+    
+    return cell;
+}
+
+#pragma mark - UITableViewDelegate
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSInteger section = indexPath.section;
+    
+    if (section == 0) {
+        return LPDetailViewDetailCellHeight;
+    } else if (section == 1) {
+        return LPDetailViewMapCellHeight;
+    }
+    
+    return 0;
+}
+
+#pragma mark - Load Content Methods
+
+- (void)loadPetImage
 {
     if (_petVO.image) {
-        [self loadComplete];
+        [self loadPetImageComplete];
         return;
     }
     
@@ -78,7 +226,7 @@
     };
     void (^success)() = ^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
         _petVO.image = image;
-        [self loadComplete];
+        [self loadPetImageComplete];
     };
     void (^failure)() = ^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
         [self loadFail];
@@ -89,13 +237,10 @@
     [operationQueue addOperation:operation];
 }
 
-- (void)loadComplete
+- (void)loadPetImageComplete
 {
-    LPPetDetailView *view = (LPPetDetailView *)self.view;
-    view.photoView.image = _petVO.image;
-    view.typeLabel.text = _petVO.petType;
-    view.dayLabel.text = _petVO.leftDay;
-    view.detailLabel.text = [NSString stringWithFormat:@"%@ / %@일 발견", _petVO.detail, _petVO.date];
+    UIImageView *headerView = (UIImageView *)_tableView.tableHeaderView;
+    [headerView setImage:_petVO.image];
 }
 
 - (void)loadFail
@@ -104,6 +249,47 @@
     
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"알림" message:@"데이터를 가져오는데 실패했습니다!" delegate:self cancelButtonTitle:@"닫기" otherButtonTitles:nil];
     [alert show];
+}
+
+- (void)loadCenterLocation
+{
+    if (_petVO.geoInfo) {
+        [self loadCenterLocationComplete];
+        return;
+    }
+    
+    NSURL *url = [self createCenterLocationQueryURL];
+    NSURLRequest *request = [NSURLRequest requestWithURL:url];
+    
+    void (^success)() = ^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
+        NSDictionary *searchResult = [NSDictionary dictionaryWithDictionary:[JSON objectForKey:@"channel"]];
+        NSArray *items = [searchResult objectForKey:@"item"];
+        
+        if (items == nil || items.count == 0) {
+            return;
+        }
+        
+        _petVO.geoInfo = [items objectAtIndex:0];
+        [self loadCenterLocationComplete];
+    };
+    void (^failure)() = ^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
+        [self loadFail];
+    };
+    
+    [[AFJSONRequestOperation JSONRequestOperationWithRequest:request success:success failure:failure] start];
+}
+
+- (void)loadCenterLocationComplete
+{
+    [_mapCell setCenterLocation:_petVO.centerName
+                       latitude:[_petVO.geoInfo objectForKey:@"lat"]
+                      longitude:[_petVO.geoInfo objectForKey:@"lng"]];
+}
+
+- (NSURL *)createCenterLocationQueryURL
+{
+    NSString *query = [NSString stringWithFormat:@"%@%@", kLPDaumLocalAPIaddr2coord, _petVO.centerLocation];
+    return [NSURL URLWithString:[query stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
 }
 
 @end

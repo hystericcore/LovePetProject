@@ -7,7 +7,6 @@
 //
 
 #import "LPSearchViewController.h"
-#import "LPSearchOptionViewController.h"
 
 #import "LPPetDAO.h"
 
@@ -17,11 +16,11 @@ NSInteger const kLPSearchViewHeight = 72 * 4;
 
 @implementation LPSearchViewController
 
-- (id)initWithPetDAO:(LPPetDAO *)petDAO
+- (id)init
 {
     self = [super init];
     if (self) {
-        self.petDAO = petDAO;
+        self.petDAO = [LPPetDAO sharedInstance];
     }
     return self;
 }
@@ -31,6 +30,7 @@ NSInteger const kLPSearchViewHeight = 72 * 4;
     [super viewDidLoad];
     
     [self initializeDataSource];
+    [self loadSearchOptions];
     [self createSearchField];
     [self createTableView];
     [self createSearchButton];
@@ -39,13 +39,13 @@ NSInteger const kLPSearchViewHeight = 72 * 4;
 - (void)initializeDataSource
 {
     self.dataSource = @[@"동물종류", @"보호중인 위치"];
-    /*
-     self.dataSource = @[@"전체", @"서울특별시", @"부산광역시", @"대구광역시", @"인천광역시", @"세종특별자치시", @"대전광역시", @"울산광역시", @"경기도", @"강원도", @"충청북도", @"충청남도", @"전라북도", @"전라남도", @"경상북도", @"경상남도", @"제주특별자치도"];
-     break;
-     
-     case LPSearchTypePetType:
-     self.dataSource = @[@"전체", @"강아지", @"고양이", @"기타"];
-     */
+}
+
+- (void)loadSearchOptions
+{
+    self.searchKeyword = [[NSUserDefaults standardUserDefaults] stringForKey:kLPSearchOptionKeyword];
+    self.searchPetType = [[NSUserDefaults standardUserDefaults] stringForKey:kLPSearchOptionPetType];
+    self.searchLocation = [[NSUserDefaults standardUserDefaults] stringForKey:kLPSearchOptionLocation];
 }
 
 #pragma mark - SearchField
@@ -53,13 +53,16 @@ NSInteger const kLPSearchViewHeight = 72 * 4;
 - (void)createSearchField
 {
     self.searchField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(self.view.bounds), kLPSearchViewCellHeight)];
-    [_searchField setBackgroundColor:RGB(241, 242, 242)];
-    [_searchField setPlaceholder:@"공고번호"];
+    [_searchField setBackgroundColor:COLOR_GRAYWHITE];
+    [_searchField setPlaceholder:@"키워드 검색"];
     [_searchField setFont:[UIFont systemFontOfSize:22]];
     [_searchField setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
     [_searchField addTarget:self action:@selector(touchSearchField:) forControlEvents:UIControlEventEditingDidBegin];
     [_searchField addTarget:self action:@selector(dismissKeyboard) forControlEvents:UIControlEventEditingDidEndOnExit];
     [_searchField setReturnKeyType:UIReturnKeyDone];
+    [_searchField setClearButtonMode:UITextFieldViewModeWhileEditing];
+    [_searchField setText:_searchKeyword];
+    
     UIView* leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 20)];
     [_searchField setLeftViewMode:UITextFieldViewModeAlways];
     [_searchField setLeftView:leftView];
@@ -91,7 +94,7 @@ NSInteger const kLPSearchViewHeight = 72 * 4;
     [_tableView setDataSource:self];
     [_tableView setDelegate:self];
     [_tableView setScrollEnabled:NO];
-    [_tableView setBackgroundColor:RGB(241, 242, 242)];
+    [_tableView setBackgroundColor:COLOR_GRAYWHITE];
     [_tableView setContentInset:UIEdgeInsetsMake(1.0, 0.0, 0.0, 0.0)];
     [self.view addSubview:_tableView];
 }
@@ -102,7 +105,7 @@ NSInteger const kLPSearchViewHeight = 72 * 4;
 {
     self.searchButton = [[UIButton alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(_tableView.frame), CGRectGetWidth(self.view.frame), kLPSearchViewCellHeight)];
     [_searchButton addTarget:self action:@selector(actionSearchButton:) forControlEvents:UIControlEventTouchUpInside];
-    [_searchButton setBackgroundColor:RGB(77, 98, 153)];
+    [_searchButton setBackgroundColor:COLOR_DEEP_BLUE];
     [_searchButton setTitle:@"검색" forState:UIControlStateNormal];
     [_searchButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [_searchButton setTitleColor:[UIColor colorWithWhite:1.0f alpha:0.5f] forState:UIControlStateHighlighted];
@@ -110,9 +113,34 @@ NSInteger const kLPSearchViewHeight = 72 * 4;
     [self.view addSubview:_searchButton];
 }
 
-- (void)actionSearchButton:(UIButton *)button
+- (void)actionSearchButton:(id)sender
 {
     [self postSearchViewDismiss];
+    [self resetPetDataSource];
+}
+
+- (void)resetPetDataSource
+{
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    
+    if (_searchField.text == nil)
+        [userDefaults removeObjectForKey:kLPSearchOptionKeyword];
+    else
+        [userDefaults setObject:_searchField.text forKey:kLPSearchOptionKeyword];
+    
+    if (_searchPetType == nil)
+        [userDefaults removeObjectForKey:kLPSearchOptionPetType];
+    else
+        [userDefaults setObject:_searchPetType forKey:kLPSearchOptionPetType];
+    
+    if (_searchLocation == nil)
+        [userDefaults removeObjectForKey:kLPSearchOptionLocation];
+    else
+        [userDefaults setObject:_searchLocation forKey:kLPSearchOptionLocation];
+    
+    [userDefaults synchronize];
+    
+    [_petDAO resetPetDataSource];
 }
 
 - (void)postSearchViewDismiss
@@ -142,10 +170,20 @@ NSInteger const kLPSearchViewHeight = 72 * 4;
         [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
         [cell setAccessoryType:UITableViewCellAccessoryDisclosureIndicator];
         [cell.textLabel setFont:[UIFont systemFontOfSize:22]];
-        [cell.textLabel setTextColor:[UIColor darkGrayColor]];
+        [cell.textLabel setTextColor:COLOR_TEXT];
+        [cell.detailTextLabel setTextColor:COLOR_LIGHT_TEXT];
     }
     
-    [cell.textLabel setText:[_dataSource objectAtIndex:indexPath.row]];
+    NSString *titleText = [_dataSource objectAtIndex:indexPath.row];
+    NSString *detailText;
+    
+    if (indexPath.row == 1)
+        detailText = _searchLocation;
+    else
+        detailText = _searchPetType;
+    
+    [cell.textLabel setText:titleText];
+    [cell.detailTextLabel setText:detailText];
     
     return cell;
 }
@@ -160,14 +198,36 @@ NSInteger const kLPSearchViewHeight = 72 * 4;
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     LPSearchOptionViewController *viewController = [[LPSearchOptionViewController alloc] init];
+    viewController.delegate = self;
     if (indexPath.row == 0) {
-        viewController.dataSource = @[@"전체", @"강아지", @"고양이"];
+        viewController.dataSource = [_petDAO getSearchOptionValues:kLPSearchOptionPetType];
         viewController.searchOption = kLPSearchOptionPetType;
+        if (_searchPetType)
+            viewController.selectedIndex = [viewController.dataSource indexOfObject:_searchPetType];
     } else {
-        viewController.dataSource = @[@"전체", @"서울특별시", @"부산광역시", @"대구광역시", @"인천광역시", @"세종특별자치시", @"대전광역시", @"울산광역시", @"경기도", @"강원도", @"충청북도", @"충청남도", @"전라북도", @"전라남도", @"경상북도", @"경상남도", @"제주특별자치도"];
+        viewController.dataSource = [_petDAO getSearchOptionValues:kLPSearchOptionLocation];
         viewController.searchOption = kLPSearchOptionLocation;
+        if (_searchLocation)
+            viewController.selectedIndex = [viewController.dataSource indexOfObject:_searchLocation];
     }
     [self.navigationController pushViewController:viewController animated:YES];
+}
+
+#pragma mark - LPSearchOptionViewControllerDelegate
+
+- (void)searchOptionViewController:(LPSearchOptionViewController *)controller didSelectOption:(NSInteger)index
+{
+    NSString *value = [controller.dataSource objectAtIndex:index];
+    if (index == 0)
+        value = nil;
+    
+    if ([controller.searchOption isEqualToString:kLPSearchOptionPetType]) {
+        self.searchPetType = value;
+    } else if ([controller.searchOption isEqualToString:kLPSearchOptionLocation]) {
+        self.searchLocation = value;
+    }
+    
+    [_tableView reloadData];
 }
 
 @end

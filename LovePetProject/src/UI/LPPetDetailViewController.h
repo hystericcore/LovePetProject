@@ -8,7 +8,8 @@
 
 #import <UIKit/UIKit.h>
 @class LPPetVO;
-@interface LPPetDetailViewController : UIViewController
+@interface LPPetDetailViewController : UIViewController <UITableViewDataSource, UITableViewDelegate>
 - (id)initWithPetVO:(LPPetVO *)petVO;
 @property (nonatomic, strong) LPPetVO *petVO;
+@property (nonatomic, strong) UITableView *tableView;
 @end

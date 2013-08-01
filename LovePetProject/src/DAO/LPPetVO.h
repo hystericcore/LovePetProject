@@ -11,6 +11,7 @@
 @interface LPPetVO : NSObject
 - (id)initWithProperties:(NSDictionary *)properties;
 - (void)resetLeftDay;
+- (NSString *)getRemakePetType;
 // baas entity id
 @property (nonatomic, strong) NSString *uuid;
 
@@ -38,4 +39,6 @@
 @property (nonatomic, strong) NSString *centerName;
 @property (nonatomic, strong) NSString *centerTel;
 @property (nonatomic, strong) NSString *centerLocation;
+
+@property (nonatomic, strong) NSDictionary *geoInfo;
 @end

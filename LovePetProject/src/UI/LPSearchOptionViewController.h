@@ -7,10 +7,15 @@
 //
 
 #import <UIKit/UIKit.h>
-extern NSString * const kLPSearchOptionPetType;
-extern NSString * const kLPSearchOptionLocation;
+@protocol LPSearchOptionViewControllerDelegate;
 @interface LPSearchOptionViewController : UIViewController <UITableViewDataSource, UITableViewDelegate>
+@property (nonatomic, assign) id <LPSearchOptionViewControllerDelegate> delegate;
 @property (nonatomic, strong) NSArray *dataSource;
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, strong) NSString *searchOption;
+@property (nonatomic, assign) NSInteger selectedIndex;
+@end
+
+@protocol LPSearchOptionViewControllerDelegate <NSObject>
+- (void)searchOptionViewController:(LPSearchOptionViewController *)controller didSelectOption:(NSInteger)index;
 @end
