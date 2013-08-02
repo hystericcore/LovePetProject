@@ -113,8 +113,8 @@
     UILabel *lastLabel = [_detailContentLabels objectAtIndex:_detailContentLabels.count - 1];
     [lastLabel setFont:[UIFont boldSystemFontOfSize:14]];
     [lastLabel setTextColor:COLOR_LIGHT_BLUE];
-    [lastLabel addGestureRecognizer:recognizer];
     [lastLabel setUserInteractionEnabled:YES];
+    [lastLabel addGestureRecognizer:recognizer];
 }
 
 - (void)setDetailContentLabelsText:(NSArray *)texts

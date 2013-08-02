@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D93917B517AB4AD500850CE5 /* UIImageViewModeScaleAspect.m in Sources */ = {isa = PBXBuildFile; fileRef = D93917B417AB4AD500850CE5 /* UIImageViewModeScaleAspect.m */; };
 		D95C95DA17AA975100486249 /* PKRevealController.m in Sources */ = {isa = PBXBuildFile; fileRef = D95C95D517AA975100486249 /* PKRevealController.m */; };
 		D95C95DB17AA975100486249 /* PKRevealControllerContainerView.m in Sources */ = {isa = PBXBuildFile; fileRef = D95C95D717AA975100486249 /* PKRevealControllerContainerView.m */; };
 		D95C95DC17AA975100486249 /* UIViewController+PKRevealController.m in Sources */ = {isa = PBXBuildFile; fileRef = D95C95D917AA975100486249 /* UIViewController+PKRevealController.m */; };
@@ -117,6 +118,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		D93917B317AB4AD500850CE5 /* UIImageViewModeScaleAspect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIImageViewModeScaleAspect.h; sourceTree = "<group>"; };
+		D93917B417AB4AD500850CE5 /* UIImageViewModeScaleAspect.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIImageViewModeScaleAspect.m; sourceTree = "<group>"; };
 		D95C95D417AA975100486249 /* PKRevealController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKRevealController.h; sourceTree = "<group>"; };
 		D95C95D517AA975100486249 /* PKRevealController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PKRevealController.m; sourceTree = "<group>"; };
 		D95C95D617AA975100486249 /* PKRevealControllerContainerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKRevealControllerContainerView.h; sourceTree = "<group>"; };
@@ -323,6 +326,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		D93917B217AB4AD500850CE5 /* UIImageViewModeScaleAspect */ = {
+			isa = PBXGroup;
+			children = (
+				D93917B317AB4AD500850CE5 /* UIImageViewModeScaleAspect.h */,
+				D93917B417AB4AD500850CE5 /* UIImageViewModeScaleAspect.m */,
+			);
+			path = UIImageViewModeScaleAspect;
+			sourceTree = "<group>";
+		};
 		D95C95D317AA975100486249 /* PKRevealController */ = {
 			isa = PBXGroup;
 			children = (
@@ -554,6 +566,7 @@
 				D95C95D317AA975100486249 /* PKRevealController */,
 				D9AD3BFB17A7ED49000F46D1 /* PSCollectionView */,
 				FB8CD99E1787E78F00D2ED21 /* TMQuiltView */,
+				D93917B217AB4AD500850CE5 /* UIImageViewModeScaleAspect */,
 			);
 			path = externals;
 			sourceTree = "<group>";
@@ -895,6 +908,7 @@
 				FB13A4061792B62B00218055 /* LPPetDAO.m in Sources */,
 				D9AD3BF717A7ED2A000F46D1 /* LPPetListViewController.m in Sources */,
 				FB16EC2D17910B6F007A352C /* ISRefreshControl.m in Sources */,
+				D93917B517AB4AD500850CE5 /* UIImageViewModeScaleAspect.m in Sources */,
 				FB8CD9A71787E78F00D2ED21 /* TMQuiltViewCell.m in Sources */,
 				D9F1835617A93234001BA1A8 /* LPDetailViewDetailCell.m in Sources */,
 				FB9AE8F517887AD30071DA68 /* LPPetDetailViewController.m in Sources */,

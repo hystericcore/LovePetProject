@@ -7,9 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
-@class LPPetVO;
-@interface LPPetDetailViewController : UIViewController <UITableViewDataSource, UITableViewDelegate>
+@class LPPetVO, UIImageViewModeScaleAspect;
+@interface LPPetDetailViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, UIGestureRecognizerDelegate>
 - (id)initWithPetVO:(LPPetVO *)petVO;
 @property (nonatomic, strong) LPPetVO *petVO;
 @property (nonatomic, strong) UITableView *tableView;
+@property (nonatomic, strong) UIImageViewModeScaleAspect *headerView;
 @end

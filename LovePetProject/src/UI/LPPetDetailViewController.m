@@ -14,6 +14,7 @@
 
 #import "UIView+Utils.h"
 #import "UIViewController+Commons.h"
+#import "UIImageViewModeScaleAspect.h"
 #import "AFNetworking.h"
 
 NSString * const kLPDaumLocalAPIaddr2coord = @"http://apis.daum.net/local/geo/addr2coord?apikey=fcc4121ab324059bf37e6dccc20932b4adfd053a&output=json&q=";
@@ -26,6 +27,7 @@ static NSString *MapCellIdentifer = @"MapCell";
 @interface LPPetDetailViewController ()
 @property (nonatomic, strong) LPDetailViewMapCell *mapCell;
 @property (nonatomic, strong) LPDetailViewDetailCell *detailCell;
+@property (nonatomic, assign) CGPoint previousTableViewContentOffset;
 @end
 
 @implementation LPPetDetailViewController
@@ -80,11 +82,15 @@ static NSString *MapCellIdentifer = @"MapCell";
     CGFloat headerViewPetTypePoint = 26;
     CGFloat headerViewPetDetailPoint = 14;
     CGFloat headerViewLabelMargin = 2;
+
+    UITapGestureRecognizer *recognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(actionPetImage:)];
+    recognizer.delegate = self;
     
-    UIImageView *headerView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, headerViewSize, headerViewSize)];
-    [headerView setContentMode:UIViewContentModeScaleAspectFill];
-    [headerView setUserInteractionEnabled:YES];
-    [headerView setClipsToBounds:YES];
+    self.headerView = [[UIImageViewModeScaleAspect alloc] initWithFrame:CGRectMake(0, 0, headerViewSize, headerViewSize)];
+    [_headerView setClipsToBounds:YES];
+    [_headerView setContentMode:UIViewContentModeScaleAspectFill];
+    [_headerView setUserInteractionEnabled:YES];
+    [_headerView addGestureRecognizer:recognizer];
     
     UILabel *petTypeLabel = [[UILabel alloc] initWithFrame:CGRectMake(headerViewPadding,
                                                                       headerViewSize -
@@ -99,7 +105,7 @@ static NSString *MapCellIdentifer = @"MapCell";
     [petTypeLabel setFont:[UIFont boldSystemFontOfSize:headerViewPetTypePoint]];
     [petTypeLabel setBackgroundColor:[UIColor clearColor]];
     [petTypeLabel setUserInteractionEnabled:NO];
-    [headerView addSubview:petTypeLabel];
+    [_headerView addSubview:petTypeLabel];
     
     UILabel *petDetailLabel = [[UILabel alloc] initWithFrame:CGRectMake(headerViewPadding,
                                                                         headerViewSize -
@@ -113,14 +119,13 @@ static NSString *MapCellIdentifer = @"MapCell";
     [petDetailLabel setLineBreakMode:NSLineBreakByClipping];
     [petDetailLabel setBackgroundColor:[UIColor clearColor]];
     [petDetailLabel setUserInteractionEnabled:NO];
-//    [petDetailLabel setShadowColor:COLOR_LIGHT_TEXT];
-//    [petDetailLabel setShadowOffset:CGSizeMake(0.0, 0.0)];
-//    [petDetailLabel.layer setShadowRadius:3.0];
-//    [petDetailLabel.layer setShadowOpacity:0.7];
-//    [petDetailLabel setClipsToBounds:NO];
-    [headerView addSubview:petDetailLabel];
+    [_headerView addSubview:petDetailLabel];
     
-    [_tableView setTableHeaderView:headerView];
+    [self.tableView addSubview:_headerView];
+    
+    UIView *fakeHeaderView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, headerViewSize, headerViewSize)];
+    [fakeHeaderView setUserInteractionEnabled:NO];
+    [_tableView setTableHeaderView:fakeHeaderView];
     
     // footer view
     CGFloat footerViewWidth = CGRectGetWidth(self.view.frame);
@@ -155,6 +160,69 @@ static NSString *MapCellIdentifer = @"MapCell";
 }
 
 #pragma mark - Action Methods
+
+- (void)actionPetImage:(id)sender
+{
+    CGPoint currentContentOffset = _tableView.contentOffset;
+    CGRect square = CGRectMake(0, 0, CGRectGetWidth(self.view.frame), CGRectGetWidth(self.view.frame));
+    CGRect full = self.view.bounds;
+    CGFloat distanceY = CGRectGetHeight(full) - CGRectGetHeight(square);
+    full.size.height += 44;
+    
+    if (_headerView.contentMode == UIViewContentModeScaleAspectFit) {
+        [self.navigationController setNavigationBarHidden:NO animated:YES];
+        CGRect tableFrame = _tableView.frame;
+        tableFrame.size.height -= 44;
+        [_tableView setFrame:tableFrame];
+        [_tableView setScrollEnabled:YES];
+        
+        [_headerView animateToScaleAspectFillToFrame:square WithDuration:0.5f afterDelay:0];
+        
+        [UIView animateWithDuration:0.4f animations:^{
+            [_tableView setContentOffset:self.previousTableViewContentOffset];
+            
+            [UIView animateWithDuration:0.4f animations:^{
+                for (UIView *view in _headerView.subviews) {
+                    if (![view isKindOfClass:[UILabel class]])
+                        continue;
+                    CGRect viewFrame = view.frame;
+                    viewFrame.origin.y -= distanceY;
+                    [view setFrame:viewFrame];
+                }
+            }];
+            
+            [_headerView setBackgroundColor:[UIColor blackColor]];
+        } completion:^(BOOL finished) {
+            self.previousTableViewContentOffset = CGPointMake(0, 1);
+        }];
+    } else {
+        [self.navigationController setNavigationBarHidden:YES animated:YES];
+        CGRect tableFrame = _tableView.frame;
+        tableFrame.size.height += 44;
+        [_tableView setFrame:tableFrame];
+        [_tableView setScrollEnabled:NO];
+        
+        [_headerView animateToScaleAspectFitToFrame:full WithDuration:0.5f afterDelay:0];
+        
+        [UIView animateWithDuration:0.4f animations:^{
+            [_tableView setContentOffset:self.previousTableViewContentOffset];
+            
+            [UIView animateWithDuration:0.4f animations:^{
+                for (UIView *view in _headerView.subviews) {
+                    if (![view isKindOfClass:[UILabel class]])
+                        continue;
+                    CGRect viewFrame = view.frame;
+                    viewFrame.origin.y += distanceY + 44;
+                    [view setFrame:viewFrame];
+                }
+            }];
+            
+            [_headerView setBackgroundColor:[UIColor whiteColor]];
+        } completion:^(BOOL finished) {
+            self.previousTableViewContentOffset = currentContentOffset;
+        }];
+    }
+}
 
 - (void)actionClipButton:(id)sender
 {
@@ -275,8 +343,7 @@ static NSString *MapCellIdentifer = @"MapCell";
 
 - (void)loadPetImageComplete
 {
-    UIImageView *headerView = (UIImageView *)_tableView.tableHeaderView;
-    [headerView setImage:_petVO.image];
+    [_headerView setImage:_petVO.image];
 }
 
 - (void)loadFail
