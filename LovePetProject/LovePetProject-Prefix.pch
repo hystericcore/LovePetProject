@@ -18,7 +18,7 @@
     #define RGBA(r, g, b, a) [UIColor colorWithRed:r/255.0 green:g/255.0 blue:b/255.0 alpha:a]
     #define NSEUCKRStringEncoding 0x80000000 + kCFStringEncodingDOSKorean
 
-    #define COLOR_LOVEPET RGB(250, 67, 86)
+    #define COLOR_LOVEPET RGB(251, 67, 87)
 
     #define COLOR_INDIGO_BLUE RGB(44, 62, 80)
     #define COLOR_LIGHT_INDIGO_BLUE RGB(57, 80, 103)
@@ -37,4 +37,11 @@
     #define COLOR_SINGLE_LINE_ALPHA3 RGBA(153, 153, 153, 0.3f)
     #define COLOR_SINGLE_LINE_ALPHA4 RGBA(153, 153, 153, 0.4f)
     #define COLOR_SINGLE_LINE_ALPHA5 RGBA(153, 153, 153, 0.5f)
+
+    #define SYSTEM_VERSION_EQUAL_TO(v)                  ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedSame)
+    #define SYSTEM_VERSION_GREATER_THAN(v)              ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedDescending)
+    #define SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(v)  ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedAscending)
+    #define SYSTEM_VERSION_LESS_THAN(v)                 ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedAscending)
+    #define SYSTEM_VERSION_LESS_THAN_OR_EQUAL_TO(v)     ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedDescending)
+
 #endif

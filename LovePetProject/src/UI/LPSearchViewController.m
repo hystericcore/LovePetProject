@@ -38,7 +38,7 @@ NSInteger const kLPSearchViewHeight = 72 * 4;
 
 - (void)initializeDataSource
 {
-    self.dataSource = @[@"동물종류", @"보호중인 위치"];
+    self.dataSource = @[@"동물유형", @"보호중인 위치"];
 }
 
 - (void)loadSearchOptions

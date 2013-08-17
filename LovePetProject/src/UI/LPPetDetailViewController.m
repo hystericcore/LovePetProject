@@ -12,10 +12,13 @@
 #import "LPPetDAO.h"
 #import "LPPetVO.h"
 
+#import "UIBarButtonItem+Utils.h"
 #import "UIView+Utils.h"
 #import "UIViewController+Commons.h"
 #import "UIImageViewModeScaleAspect.h"
 #import "AFNetworking.h"
+#import "DCKakaoActivity.h"
+#import "DCLineActivity.h"
 
 NSString * const kLPDaumLocalAPIaddr2coord = @"http://apis.daum.net/local/geo/addr2coord?apikey=fcc4121ab324059bf37e6dccc20932b4adfd053a&output=json&q=";
 
@@ -25,6 +28,7 @@ static NSString *DetailCellIdentifer = @"DetailCell";
 static NSString *MapCellIdentifer = @"MapCell";
 
 @interface LPPetDetailViewController ()
+@property (nonatomic, strong) NSOperationQueue *operationQueue;
 @property (nonatomic, strong) LPDetailViewMapCell *mapCell;
 @property (nonatomic, strong) LPDetailViewDetailCell *detailCell;
 @property (nonatomic, assign) CGPoint previousTableViewContentOffset;
@@ -38,6 +42,9 @@ static NSString *MapCellIdentifer = @"MapCell";
     if (self) {
         self.petVO = petVO;
         
+        // create OperationQueue
+        self.operationQueue = [[NSOperationQueue alloc] init];
+        
         // set detail cell
         NSArray *texts = @[_petVO.sex, _petVO.year, _petVO.weight, _petVO.date, _petVO.foundLocation, _petVO.boardID, _petVO.centerName, _petVO.centerLocation, _petVO.centerTel];
         self.detailCell = [[LPDetailViewDetailCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:DetailCellIdentifer];
@@ -49,13 +56,20 @@ static NSString *MapCellIdentifer = @"MapCell";
     return self;
 }
 
+- (void)dealloc
+{
+    [_operationQueue cancelAllOperations];
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.view.backgroundColor = COLOR_GRAYWHITE;
+    
+    [self.view setBackgroundColor:COLOR_GRAYWHITE];
     
     [self createTableView];
     [self createShareButton];
+    [self createBackButton];
     [self createNavTitleView];
     
     [self loadPetImage];
@@ -68,6 +82,8 @@ static NSString *MapCellIdentifer = @"MapCell";
 {
     CGRect tableViewFrame = self.view.bounds;
     tableViewFrame.size.height -= 44;
+    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7"))
+        tableViewFrame.size.height -= 22;
     
     self.tableView = [[UITableView alloc] initWithFrame:tableViewFrame style:UITableViewStylePlain];
     _tableView.dataSource = self;
@@ -89,7 +105,7 @@ static NSString *MapCellIdentifer = @"MapCell";
     self.headerView = [[UIImageViewModeScaleAspect alloc] initWithFrame:CGRectMake(0, 0, headerViewSize, headerViewSize)];
     [_headerView setClipsToBounds:YES];
     [_headerView setContentMode:UIViewContentModeScaleAspectFill];
-    [_headerView setUserInteractionEnabled:YES];
+    [_headerView setUserInteractionEnabled:NO];
     [_headerView addGestureRecognizer:recognizer];
     
     UILabel *petTypeLabel = [[UILabel alloc] initWithFrame:CGRectMake(headerViewPadding,
@@ -145,17 +161,43 @@ static NSString *MapCellIdentifer = @"MapCell";
 
 - (void)createShareButton
 {
-    UIBarButtonItem *shareButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(actionShareButton:)];
-    [self.navigationItem setRightBarButtonItem:shareButtonItem];
+    [self.navigationItem setRightBarButtonItem:[self createBarButtomItemToTarget:self
+                                                                          action:@selector(actionShareButton:)
+                                                                       imageName:@"nav_button_share.png"]];
 }
 
 - (void)actionShareButton:(id)sender
 {
-    NSArray *activityItems = @[@"주인을 애타게 찾고있는 아이들이 있어요! 러브팻에서 작성되었습니다.", _petVO.image];
+    if (_shortenLinkSrc != nil) {
+        [self showActivityController:_shortenLinkSrc];
+        return;
+    }
     
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://tinyurl.com/api-create.php?url=%@", _petVO.linkSrc]];
+    NSURLRequest *request = [NSURLRequest requestWithURL:url];
+    
+    void (^success)() = ^(AFHTTPRequestOperation *operation, id responseObject) {
+        self.shortenLinkSrc = [operation.responseString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        [self showActivityController:_shortenLinkSrc];
+    };
+    void (^failure)() = ^(AFHTTPRequestOperation *operation, NSError *error) {
+        [self showActivityController:_petVO.linkSrc];
+    };
+    
+    AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
+    [operation setCompletionBlockWithSuccess:success failure:failure];
+    [_operationQueue addOperation:operation];
+}
+
+- (void)showActivityController:(NSString *)urlString
+{
+    NSArray *activityItems = @[@"주인을 애타게 찾고 있는 아이들이 있어요!", [NSURL URLWithString:urlString], _petVO.image];
+    
+    DCKakaoActivity *kakao = [[DCKakaoActivity alloc] init];
+    DCLineActivity *line = [[DCLineActivity alloc] init];
     UIActivityViewController *activityController = [[UIActivityViewController alloc] initWithActivityItems:activityItems
-                                                                                     applicationActivities:nil];
-    activityController.excludedActivityTypes = @[UIActivityTypeAssignToContact, UIActivityTypePrint, UIActivityTypePostToWeibo, UIActivityTypeSaveToCameraRoll];
+                                                                                     applicationActivities:@[kakao, line]];
+    activityController.excludedActivityTypes = @[UIActivityTypeAssignToContact, UIActivityTypePrint, UIActivityTypeCopyToPasteboard, UIActivityTypePostToWeibo, UIActivityTypeSaveToCameraRoll];
     [self presentViewController:activityController animated:YES completion:nil];
 }
 
@@ -168,11 +210,15 @@ static NSString *MapCellIdentifer = @"MapCell";
     CGRect full = self.view.bounds;
     CGFloat distanceY = CGRectGetHeight(full) - CGRectGetHeight(square);
     full.size.height += 44;
+    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7"))
+        full.size.height += 22;
     
     if (_headerView.contentMode == UIViewContentModeScaleAspectFit) {
         [self.navigationController setNavigationBarHidden:NO animated:YES];
         CGRect tableFrame = _tableView.frame;
         tableFrame.size.height -= 44;
+        if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7"))
+            tableFrame.size.height -= 22;
         [_tableView setFrame:tableFrame];
         [_tableView setScrollEnabled:YES];
         
@@ -191,14 +237,16 @@ static NSString *MapCellIdentifer = @"MapCell";
                 }
             }];
             
-            [_headerView setBackgroundColor:[UIColor blackColor]];
+            [_headerView setBackgroundColor:[UIColor clearColor]];
         } completion:^(BOOL finished) {
-            self.previousTableViewContentOffset = CGPointMake(0, 1);
+            self.previousTableViewContentOffset = CGPointMake(0, 0);
         }];
     } else {
         [self.navigationController setNavigationBarHidden:YES animated:YES];
         CGRect tableFrame = _tableView.frame;
         tableFrame.size.height += 44;
+        if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7"))
+            tableFrame.size.height += 22;
         [_tableView setFrame:tableFrame];
         [_tableView setScrollEnabled:NO];
         
@@ -213,11 +261,13 @@ static NSString *MapCellIdentifer = @"MapCell";
                         continue;
                     CGRect viewFrame = view.frame;
                     viewFrame.origin.y += distanceY + 44;
+                    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7"))
+                        viewFrame.origin.y += 22;
                     [view setFrame:viewFrame];
                 }
             }];
             
-            [_headerView setBackgroundColor:[UIColor whiteColor]];
+            [_headerView setBackgroundColor:[UIColor blackColor]];
         } completion:^(BOOL finished) {
             self.previousTableViewContentOffset = currentContentOffset;
         }];
@@ -337,13 +387,13 @@ static NSString *MapCellIdentifer = @"MapCell";
     };
     
     AFImageRequestOperation *operation = [AFImageRequestOperation imageRequestOperationWithRequest:request imageProcessingBlock:imageProcessingBlock success:success failure:failure];
-    NSOperationQueue *operationQueue = [[NSOperationQueue alloc] init];
-    [operationQueue addOperation:operation];
+    [_operationQueue addOperation:operation];
 }
 
 - (void)loadPetImageComplete
 {
     [_headerView setImage:_petVO.image];
+    [_headerView setUserInteractionEnabled:YES];
 }
 
 - (void)loadFail
@@ -379,7 +429,8 @@ static NSString *MapCellIdentifer = @"MapCell";
         [self loadFail];
     };
     
-    [[AFJSONRequestOperation JSONRequestOperationWithRequest:request success:success failure:failure] start];
+    AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:success failure:failure];
+    [_operationQueue addOperation:operation];
 }
 
 - (void)loadCenterLocationComplete

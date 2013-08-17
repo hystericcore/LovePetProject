@@ -13,4 +13,5 @@
 @property (nonatomic, strong) LPPetVO *petVO;
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, strong) UIImageViewModeScaleAspect *headerView;
+@property (nonatomic, strong) NSString *shortenLinkSrc;
 @end

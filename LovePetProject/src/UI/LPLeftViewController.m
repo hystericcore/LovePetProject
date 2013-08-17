@@ -38,11 +38,11 @@ NSInteger const kLPLeftViewCellHeight = 46;
     [headerView setBackgroundColor:[UIColor clearColor]];
     [self.tableView setTableHeaderView:headerView];
     
-    self.controllerNames = @[@"보호동물 목록", @"관심동물 목록"];
+    self.controllerNames = @[@"보호중인 동물", @"나의 관심목록"];
     self.controllerList = [[NSMutableDictionary alloc] initWithCapacity:0];
 }
 
-#pragma mark - UITableViewDataSource
+#pragma mark - UITableViewDataSource    
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
@@ -116,6 +116,7 @@ NSInteger const kLPLeftViewCellHeight = 46;
     
     [self.revealController enterPresentationModeAnimated:YES
                                               completion:^(BOOL finished) {
+                                                  [frontViewController setNavigationBarHidden:NO];
                                                   [frontViewController setViewControllers:@[rootViewController]];
                                                   [frontViewController popToRootViewControllerAnimated:NO];
                                                   [self.revealController showViewController:frontViewController];

@@ -107,7 +107,9 @@ extern NSString * const PKRevealControllerRecognizesResetTapOnFrontViewKey;
 typedef void(^PKDefaultCompletionHandler)(BOOL finished);
 typedef void(^PKDefaultErrorHandler)(NSError *error);
 
-@interface PKRevealController : UIViewController <UIGestureRecognizerDelegate>
+@interface PKRevealController : UIViewController <UIGestureRecognizerDelegate> {
+    BOOL _bHideStatusBar;
+}
 
 #pragma mark - Properties
 @property (nonatomic, strong, readonly) UIViewController *frontViewController;

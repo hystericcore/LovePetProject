@@ -11,4 +11,6 @@
 @interface UIViewController (Commons)
 - (void)createNavTitleView;
 - (void)createLeftViewButton;
+- (void)createBackButton;
+- (UIBarButtonItem *)createBarButtomItemToTarget:(id)target action:(SEL)selector imageName:(NSString *)imageName;
 @end

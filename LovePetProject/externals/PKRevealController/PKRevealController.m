@@ -556,7 +556,15 @@ NSString * const PKRevealControllerRecognizesResetTapOnFrontViewKey = @"PKReveal
     self.leftViewWidthRange = DEFAULT_LEFT_VIEW_WIDTH_RANGE;
     self.rightViewWidthRange = DEFAULT_RIGHT_VIEW_WIDTH_RANGE;
     
+    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7"))
+        [self setNeedsStatusBarAppearanceUpdate];
+    
     self.view.autoresizingMask = (UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth);
+}
+
+- (UIStatusBarStyle)preferredStatusBarStyle
+{
+    return UIStatusBarStyleLightContent;
 }
 
 - (void)setupViewControllers

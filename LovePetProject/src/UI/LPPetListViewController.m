@@ -7,21 +7,21 @@
 //
 
 #import "LPPetListViewController.h"
-#import "UIViewController+Commons.h"
-#import "UIViewController+KNSemiModal.h"
-
-#import "ISRefreshControl.h"
-#import "PSCollectionView.h"
-
 #import "LPPetVO.h"
 #import "LPPetDAO.h"
 #import "LPPetListCell.h"
 #import "LPPetDetailViewController.h"
-
 #import "LPSearchViewController.h"
+
+#import "UIBarButtonItem+Utils.h"
+#import "UIViewController+Commons.h"
+#import "UIViewController+KNSemiModal.h"
+#import "ISRefreshControl.h"
+#import "PSCollectionView.h"
 
 @interface LPPetListViewController ()
 @property (nonatomic, assign) kLPPetListViewMode mode;
+@property (nonatomic, strong) UIImageView *emptyBackground;
 @end
 
 @implementation LPPetListViewController
@@ -122,7 +122,7 @@
 - (void)clipPetListReset:(NSNotification *)notification
 {
     self.petDataSource = [_petDAO getClipPetDataSource];
-    [_petListView reloadData];
+    [self hideIndicator];
 }
 
 #pragma mark - Acitivity Indicator Methods
@@ -155,6 +155,19 @@
     
     _petListView.alpha = 1.0f;
     _petListView.userInteractionEnabled = YES;
+    
+    if (_emptyBackground == nil) {
+        UIImage *image = [UIImage imageNamed:@"default_background.png"];
+        UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
+        imageView.frame = CGRectMake(0, 0, image.size.width / 2, image.size.height / 2);
+        imageView.center = _petListView.center;
+        imageView.userInteractionEnabled = NO;
+        [self.view addSubview:imageView];
+        
+        self.emptyBackground = imageView;
+    }
+    
+    _emptyBackground.alpha = (_petDataSource == nil || _petDataSource.count == 0) ? 1 : 0;
 }
 
 #pragma mark PetSearchButton Methods
@@ -164,11 +177,7 @@
     if (_mode == kLPPetListViewModeClip)
         return;
     
-    UIButton *listButton = [[UIButton alloc] init];
-    [listButton setImage:[UIImage imageNamed:@"nav_button_search.png"] forState:UIControlStateNormal];
-    [listButton addTarget:self action:@selector(actionSearchButton:) forControlEvents:UIControlEventTouchUpInside];
-    [listButton sizeToFit];
-    self.searchButton = [[UIBarButtonItem alloc] initWithCustomView:listButton];
+    self.searchButton = [self createBarButtomItemToTarget:self action:@selector(actionSearchButton:) imageName:@"nav_button_search.png"];
     [self.navigationItem setRightBarButtonItem:_searchButton];
 }
 
@@ -198,12 +207,16 @@
 
 - (void)createPetListView
 {
-    self.petListView = [[PSCollectionView alloc] initWithFrame:self.view.bounds];
+    CGRect frame = self.view.bounds;
+    frame.size.height -= 44;
+    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7"))
+        frame.size.height -= 22;
+    
+    self.petListView = [[PSCollectionView alloc] initWithFrame:frame];
     _petListView.delegate = self;
     _petListView.collectionViewDataSource = self;
     _petListView.collectionViewDelegate = self;
     _petListView.backgroundColor = [UIColor whiteColor];
-    _petListView.autoresizingMask = ~UIViewAutoresizingNone;
     _petListView.numColsPortrait = 2;
     [self.view addSubview:_petListView];
 }

@@ -23,13 +23,29 @@
 
 - (void)createLeftViewButton
 {
-    UIButton *listButton = [[UIButton alloc] init];
-    [listButton setImage:[UIImage imageNamed:@"nav_button_list.png"] forState:UIControlStateNormal];
-    [listButton addTarget:self action:@selector(actionLeftViewButton:) forControlEvents:UIControlEventTouchUpInside];
-    [listButton sizeToFit];
-    
-    [self.navigationItem setLeftBarButtonItem:[[UIBarButtonItem alloc] initWithCustomView:listButton]];
+    [self.navigationItem setLeftBarButtonItem:[self createBarButtomItemToTarget:self
+                                                                         action:@selector(actionLeftViewButton:)
+                                                                      imageName:@"nav_button_list.png"]];
 }
+
+- (void)createBackButton
+{
+    [self.navigationItem setLeftBarButtonItem:[self createBarButtomItemToTarget:self
+                                                                         action:@selector(actionBackButton:)
+                                                                      imageName:@"nav_button_back.png"]];
+}
+
+- (UIBarButtonItem *)createBarButtomItemToTarget:(id)target action:(SEL)selector imageName:(NSString *)imageName
+{
+    UIImage *image = [UIImage imageNamed:imageName];
+    UIButton *button = [[UIButton alloc] init];
+    [button setImage:image forState:UIControlStateNormal];
+    [button addTarget:target action:selector forControlEvents:UIControlEventTouchUpInside];
+    [button setFrame:CGRectMake(0, 0, image.size.width * 0.8, image.size.height * 0.8)];
+    return [[UIBarButtonItem alloc] initWithCustomView:button];
+}
+
+#pragma mark - Action methods
 
 - (void)actionLeftViewButton:(id)sender
 {
@@ -43,6 +59,11 @@
     }
     
     [self.navigationController.revealController showViewController:showViewController];
+}
+
+- (void)actionBackButton:(id)sender
+{
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 @end
