@@ -51,7 +51,7 @@ NSString *queryStringFromDictionary(NSDictionary *params) {
 }
 
 - (NSString *)activityTitle {
-    return @"KakaoTalk";
+    return NSLocalizedString(@"KakaoTalk", nil);
 }
 
 - (UIImage *)activityImage {

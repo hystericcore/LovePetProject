@@ -11,6 +11,8 @@
 #import "UIBarButtonItem+Utils.h"
 #import "UIView+Utils.h"
 
+NSString * const kLPCurrentVersion = @"preferences.currentVersion";
+
 NSUInteger const kLPGuidePageNumber = 3;
 
 NSUInteger const kLPGuideBandHeight = 5;
@@ -57,7 +59,7 @@ NSUInteger const kLPGuidePadding = 20;
     frame.size.height = kLPGuideBottomBarHeight;
     frame.origin.y = CGRectGetHeight(_scrollView.frame) - kLPGuideBottomBarHeight;
     self.bottomBar = [[UIToolbar alloc] initWithFrame:frame];
-    [_bottomBar setBackgroundImage:[UIImage imageNamed:@"navbar_background.png"] forToolbarPosition:UIBarPositionBottom barMetrics:UIBarMetricsDefault];
+    [_bottomBar setBackgroundImage:[UIImage imageNamed:@"navbar_background.png"] forToolbarPosition:UIToolbarPositionBottom barMetrics:UIBarMetricsDefault];
     [self.view addSubview:_bottomBar];
     
     // create bottom bar items
@@ -163,7 +165,9 @@ NSUInteger const kLPGuidePadding = 20;
 - (void)actionCloseButton:(id)sender
 {
     [self dismissViewControllerAnimated:YES completion:^{
-        
+        NSString *appVer = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
+        [[NSUserDefaults standardUserDefaults] setObject:appVer forKey:kLPCurrentVersion];
+        [[NSUserDefaults standardUserDefaults] synchronize];
     }];
 }
 

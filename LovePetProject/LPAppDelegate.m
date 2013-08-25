@@ -14,8 +14,6 @@
 
 #import "PKRevealController.h"
 
-NSString * const kLPCurrentVersion = @"preferences.currentVersion";
-
 @implementation LPAppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions

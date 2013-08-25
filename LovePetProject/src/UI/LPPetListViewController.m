@@ -191,7 +191,7 @@
     [navController setNavigationBarHidden:YES];
     [self presentSemiViewController:navController
                         withOptions:@{KNSemiModalOptionKeys.pushParentBack    : @(NO),
-                                      KNSemiModalOptionKeys.animationDuration : @(0.5),
+                                      KNSemiModalOptionKeys.animationDuration : @(0.3),
                                       KNSemiModalOptionKeys.shadowOpacity     : @(0.3),
                                       }];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dismissSearchView:) name:kLPNotificationSearchViewDismiss object:nil];

@@ -12,6 +12,7 @@
 #import "LPPetDAO.h"
 #import "LPPetVO.h"
 
+#import "LPKeyDefines.h"
 #import "UIBarButtonItem+Utils.h"
 #import "UIView+Utils.h"
 #import "UIViewController+Commons.h"
@@ -20,7 +21,7 @@
 #import "DCKakaoActivity.h"
 #import "DCLineActivity.h"
 
-NSString * const kLPDaumLocalAPIaddr2coord = @"http://apis.daum.net/local/geo/addr2coord?apikey=fcc4121ab324059bf37e6dccc20932b4adfd053a&output=json&q=";
+NSString * const kLPDaumLocalAPIaddr2coord = @"http://apis.daum.net/local/geo/addr2coord?apikey=%@&output=json&q=%@";
 
 NSInteger const kLPDetailViewClipButtonHeight = 46;
 
@@ -442,7 +443,7 @@ static NSString *MapCellIdentifer = @"MapCell";
 
 - (NSURL *)createCenterLocationQueryURL
 {
-    NSString *query = [NSString stringWithFormat:@"%@%@", kLPDaumLocalAPIaddr2coord, _petVO.centerLocation];
+    NSString *query= [NSString stringWithFormat:kLPDaumLocalAPIaddr2coord, kLPDaumLocalAPIKey, _petVO.centerLocation];
     return [NSURL URLWithString:[query stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
 }
 

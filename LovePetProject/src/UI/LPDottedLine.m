@@ -7,6 +7,8 @@
 //
 
 #import "LPDottedLine.h"
+#import <QuartzCore/QuartzCore.h>
+#import <CoreGraphics/CoreGraphics.h>
 
 @implementation LPDottedLine
 

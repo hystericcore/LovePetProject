@@ -7,6 +7,7 @@
 //
 
 #import "UIView+Utils.h"
+#import <QuartzCore/QuartzCore.h>
 
 @implementation UIView (Utils)
 

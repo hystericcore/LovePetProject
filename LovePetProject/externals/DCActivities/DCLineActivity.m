@@ -40,7 +40,7 @@ static NSString *LineBaseURL = @"line://msg/text";
 }
 
 - (NSString *)activityTitle {
-    return @"Line";
+    return NSLocalizedString(@"Line", nil);
 }
 
 - (UIImage *)activityImage {

@@ -9,6 +9,7 @@
 #import "LPDetailViewMapCell.h"
 #import <DaumMap/MTMapView.h>
 
+#import "LPKeyDefines.h"
 #import "UIView+Utils.h"
 
 @interface LPDetailViewMapCell () <MTMapViewDelegate>
@@ -78,7 +79,7 @@
     CGFloat mapViewHeight = kMapHeight;
     
     self.mapView = [[MTMapView alloc] initWithFrame:CGRectMake(mapViewX, mapViewY, mapViewWidth, mapViewHeight)];
-    [_mapView setDaumMapApiKey:@"21d89dd344ddbc90d53308bee97655131a0f7efd"];
+    [_mapView setDaumMapApiKey:kLPDaumMapAPIKey];
     [_mapView setZoomLevel:5 animated:NO];
     _mapView.delegate = self;
     _mapView.baseMapType = MTMapTypeStandard;
