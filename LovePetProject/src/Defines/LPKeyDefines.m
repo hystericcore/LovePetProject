@@ -8,5 +8,10 @@
 
 #import "LPKeyDefines.h"
 
+#ifdef DEBUG
 NSString *const kLPDaumLocalAPIKey = @"570db8d67a17140b3db74db41d1451aad5f21d52";
 NSString *const kLPDaumMapAPIKey = @"34ed84ba6662222da298de65609db0052a123791";
+#else
+NSString *const kLPDaumLocalAPIKey = @"";
+NSString *const kLPDaumMapAPIKey = @"";
+#endif
