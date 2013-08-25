@@ -1095,6 +1095,7 @@
 		FBC9745F1787CF2400915EB5 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				BUNDLE_ID = love.pet.project.dev;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer: HyunJoon Park (NE338V8DZ8)";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1122,6 +1123,7 @@
 		FBC974601787CF2400915EB5 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				BUNDLE_ID = love.pet.project;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer: HyunJoon Park (NE338V8DZ8)";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1156,7 +1158,7 @@
 				FBC9745D1787CF2400915EB5 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 		FBC9745E1787CF2400915EB5 /* Build configuration list for PBXNativeTarget "LovePetProject" */ = {
 			isa = XCConfigurationList;
@@ -1165,7 +1167,7 @@
 				FBC974601787CF2400915EB5 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 /* End XCConfigurationList section */
 	};
