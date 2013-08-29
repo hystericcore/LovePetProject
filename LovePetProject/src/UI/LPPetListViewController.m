@@ -244,7 +244,8 @@
 
 - (PSCollectionViewCell *)collectionView:(PSCollectionView *)collectionView cellForRowAtIndex:(NSInteger)index
 {
-    if (_petDataSource.count > 20 && _petDataSource.count - 15 < index)
+    if ([_petDAO respondsToSelector:@selector(requestNextPetList)] &&
+        _petDataSource.count > 20 && _petDataSource.count - 15 < index)
         [_petDAO requestNextPetList];
     
     LPPetListCell *cell = (LPPetListCell *)[collectionView dequeueReusableViewForClass:[LPPetListCell class]];
@@ -259,7 +260,7 @@
     
     NSNumber *cellIndex = [NSNumber numberWithInteger:index];
     
-    if ([_petShowed containsObject:cellIndex]) {
+    if ([_petDAO conformsToProtocol:@protocol(LPLocalPetDAO)] || [_petShowed containsObject:cellIndex]) {
         [cell.photoView setImage:vo.thumbnail];
     } else {
         [_petShowed addObject:cellIndex];

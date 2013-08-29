@@ -67,11 +67,6 @@ NSString *const kLPLocalDomainClip = @"clip";
     [[NSNotificationCenter defaultCenter] postNotificationName:kLPNotificationClipUpdateComplete object:self];
 }
 
-- (void)requestNextPetList
-{
-    
-}
-
 - (NSArray *)getPetDataSource
 {
     NSArray *archivedObjects = [self loadAllObjectInDomain:kLPLocalDomainClip];

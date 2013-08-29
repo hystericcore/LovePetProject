@@ -25,9 +25,9 @@ typedef enum {
 + (instancetype)sharedInstance;
 - (NSString *)getNotiName:(kLPPetDAONoti)type;
 - (void)resetPetDataSource;
-- (void)requestNextPetList;
 - (NSArray *)getPetDataSource;
 @optional
+- (void)requestNextPetList;
 - (NSString *)getSearchOptionName:(kLPSearchOption)option;
 - (NSArray *)getSearchOptionValues:(kLPSearchOption)option;
 @end
