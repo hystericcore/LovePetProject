@@ -9,19 +9,15 @@
 #import <UIKit/UIKit.h>
 #import "PSCollectionView.h"
 
-typedef enum {
-    kLPPetListViewModeRemote = 0,
-    kLPPetListViewModeClip,
-} kLPPetListViewMode;
-
-@class ISRefreshControl, LPPetDAO;
+@class ISRefreshControl;
+@protocol LPPetDAO;
 @interface LPPetListViewController : UIViewController <PSCollectionViewDataSource, PSCollectionViewDelegate, UIScrollViewDelegate>
-- (id)initWithViewMode:(kLPPetListViewMode)mode;
+- (id)initWithDAO:(id<LPPetDAO>)dao;
+@property (nonatomic, assign) id<LPPetDAO> petDAO;
 @property (nonatomic, strong) PSCollectionView *petListView;
 @property (nonatomic, strong) NSArray *petDataSource;
 @property (nonatomic, strong) UIBarButtonItem *searchButton;
 @property (nonatomic, strong) ISRefreshControl *refreshControl;
-@property (nonatomic, strong) LPPetDAO *petDAO;
 @property (nonatomic, strong) UIActivityIndicatorView *indicator;
 @property (nonatomic, strong) NSMutableArray *petShowed;
 @end

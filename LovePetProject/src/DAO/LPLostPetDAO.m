@@ -6,25 +6,20 @@
 //  Copyright (c) 2013년 HyunJoon Park. All rights reserved.
 //
 
-#import "LPPetDAO.h"
+#import "LPLostPetDAO.h"
 #import "LPPetVO.h"
 
 #import "AFNetworking.h"
 
-NSString *const kLPNotificationPetListReset = @"petDAO.listReset";
-NSString *const kLPNotificationPetListUpdateComplete = @"petDAO.listUpdateComplete";
-NSString *const kLPNotificationPetListReturnZero = @"petDAO.listReturnZero";
-NSString *const kLPNotificationPetListUpdateFail = @"petDAO.listUpdateFail";
-NSString *const kLPNotificationPetListRequestFail = @"petDAO.listRequestFail";
+NSString *const kLPNotificationLostReset = @"petDAO.lostListReset";
+NSString *const kLPNotificationLostUpdateComplete = @"petDAO.lostUpdateComplete";
+NSString *const kLPNotificationLostReturnZero = @"petDAO.lostReturnZero";
+NSString *const kLPNotificationLostUpdateFail = @"petDAO.lostUpdateFail";
+NSString *const kLPNotificationLostRequestFail = @"petDAO.lostRequestFail";
 
-NSString *const kLPNotificationClipPetListReset = @"petDAO.clipListReset";
-
-NSString *const kLPPetKindCat = @"422400";
-NSString *const kLPPetKindDog = @"417000";
-
-NSString *const kLPSearchOptionKeyword = @"searchOption.keyword";
-NSString *const kLPSearchOptionPetType = @"searchOption.petType";
-NSString *const kLPSearchOptionLocation = @"searchOption.location";
+NSString *const kLPSearchOptionKeywordKey = @"searchOption.keyword";
+NSString *const kLPSearchOptionPetTypeKey = @"searchOption.petType";
+NSString *const kLPSearchOptionLocationKey = @"searchOption.location";
 
 NSString *const kLPPetQueryURL = @"https://api.baas.io/19afa818-e241-11e2-9011-06530c0000b4/3a653992-e241-11e2-9011-06530c0000b4/pets?ql=select * ";
 
@@ -39,19 +34,16 @@ NSString *const kLPPetQueryCursor = @"cursor";
 NSString *const kLPPetListKey = @"entities";
 NSString *const kLPPetCursorKey = @"cursor";
 
-NSString *const kLPLocalRootPath = @"lovepet";
-NSString *const kLPLocalDomainClip = @"clip";
-
-@interface LPPetDAO ()
+@interface LPLostPetDAO ()
 @property (nonatomic, strong) NSMutableArray *petDataSource;
 @property (nonatomic, strong) NSString *currentPetKind;
 @property (nonatomic, strong) NSString *currentLocation;
 @end
-@implementation LPPetDAO
+@implementation LPLostPetDAO
 
 + (instancetype)sharedInstance
 {
-    static LPPetDAO *_sharedInstance = nil;
+    static LPLostPetDAO *_sharedInstance = nil;
     static dispatch_once_t oncePredicate;
     dispatch_once(&oncePredicate, ^{
         _sharedInstance = [[self alloc] init];
@@ -70,12 +62,41 @@ NSString *const kLPLocalDomainClip = @"clip";
     return self;
 }
 
-- (void)resetRemotePetDataSource
+- (NSString *)getNotiName:(kLPPetDAONoti)type
+{
+    NSString *name = nil;
+    
+    switch (type) {
+        case kLPPetDAONotiReset:
+            name = kLPNotificationLostReset;
+            break;
+            
+        case kLPPetDAONotiUpdateComplete:
+            name = kLPNotificationLostUpdateComplete;
+            break;
+            
+        case kLPPetDAONotiUpdateFail:
+            name = kLPNotificationLostUpdateFail;
+            break;
+            
+        case kLPPetDAONotiReturnZero:
+            name = kLPNotificationLostReturnZero;
+            break;
+            
+        case kLPPetDAONotiRequestFail:
+            name = kLPNotificationLostRequestFail;
+            break;
+    }
+    
+    return name;
+}
+
+- (void)resetPetDataSource
 {
     self.currentQueryCursor = nil;
     self.stopQuery = NO;
     self.petDataSource = [[NSMutableArray alloc] initWithCapacity:0];
-    [[NSNotificationCenter defaultCenter] postNotificationName:kLPNotificationPetListReset object:self];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kLPNotificationLostReset object:self];
     
     [self requestPetList];
 }
@@ -85,19 +106,47 @@ NSString *const kLPLocalDomainClip = @"clip";
     [self requestPetList];
 }
 
-- (NSArray *)getRemotePetDataSource
+- (NSArray *)getPetDataSource
 {
     return [NSArray arrayWithArray:self.petDataSource];
 }
 
-- (NSArray *)getSearchOptionValues:(NSString *)optionType
+- (NSString *)getSearchOptionName:(kLPSearchOption)option
 {
-    NSArray *values;
+    NSString *name = nil;
     
-    if ([optionType isEqualToString:kLPSearchOptionLocation]) {
-        values = @[@"전체", @"서울특별시", @"부산광역시", @"대구광역시", @"인천광역시", @"세종특별자치시", @"대전광역시", @"울산광역시", @"경기도", @"강원도", @"충청북도", @"충청남도", @"전라북도", @"전라남도", @"경상북도", @"경상남도", @"제주특별자치도"];
-    } else if ([optionType isEqualToString:kLPSearchOptionPetType]) {
-        values = @[@"전체", @"개", @"고양이"];
+    switch (option) {
+        case kLPSearchOptionKeyword:
+            name = kLPSearchOptionKeywordKey;
+            break;
+            
+        case kLPSearchOptionLocation:
+            name = kLPSearchOptionLocationKey;
+            break;
+            
+        case kLPSearchOptionPetType:
+            name = kLPSearchOptionPetTypeKey;
+            break;
+    }
+    
+    return name;
+}
+
+- (NSArray *)getSearchOptionValues:(kLPSearchOption)option
+{
+    NSArray *values = nil;
+    
+    switch (option) {
+        case kLPSearchOptionLocation:
+            values = @[@"전체", @"서울특별시", @"부산광역시", @"대구광역시", @"인천광역시", @"세종특별자치시", @"대전광역시", @"울산광역시", @"경기도", @"강원도", @"충청북도", @"충청남도", @"전라북도", @"전라남도", @"경상북도", @"경상남도", @"제주특별자치도"];
+            break;
+            
+        case kLPSearchOptionPetType:
+            values = @[@"전체", @"개", @"고양이"];
+            break;
+            
+        default:
+            break;
     }
     
     return values;
@@ -121,7 +170,7 @@ NSString *const kLPLocalDomainClip = @"clip";
             self.currentQueryCursor = nil;
             self.stopQuery = YES;
             
-            [[NSNotificationCenter defaultCenter] postNotificationName:kLPNotificationPetListReturnZero object:self];
+            [[NSNotificationCenter defaultCenter] postNotificationName:kLPNotificationLostReturnZero object:self];
         } else {
             self.currentQueryCursor = cursorKey;
             
@@ -132,7 +181,7 @@ NSString *const kLPLocalDomainClip = @"clip";
         }
     };
     void (^failure)() = ^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:kLPNotificationPetListRequestFail object:self];
+        [[NSNotificationCenter defaultCenter] postNotificationName:kLPNotificationLostRequestFail object:self];
     };
     
     AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:success failure:failure];
@@ -154,11 +203,11 @@ NSString *const kLPLocalDomainClip = @"clip";
             vo.thumbnail = image;
             
             if (--requestCount == 0)
-                [[NSNotificationCenter defaultCenter] postNotificationName:kLPNotificationPetListUpdateComplete object:self];
+                [[NSNotificationCenter defaultCenter] postNotificationName:kLPNotificationLostUpdateComplete object:self];
         };
         void (^failure)() = ^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
             [_petDataSource removeObject:vo];
-            [[NSNotificationCenter defaultCenter] postNotificationName:kLPNotificationPetListUpdateFail object:self];
+            [[NSNotificationCenter defaultCenter] postNotificationName:kLPNotificationLostUpdateFail object:self];
         };
         
         AFImageRequestOperation *operation = [AFImageRequestOperation imageRequestOperationWithRequest:request imageProcessingBlock:nil success:[success copy] failure:[failure copy]];
@@ -197,13 +246,15 @@ NSString *const kLPLocalDomainClip = @"clip";
 - (NSURL *)createPetURL
 {
     [[NSUserDefaults standardUserDefaults] synchronize];
-    NSString *keyword = [[NSUserDefaults standardUserDefaults] stringForKey:kLPSearchOptionKeyword];
-    NSString *petType = [[NSUserDefaults standardUserDefaults] stringForKey:kLPSearchOptionPetType];
-    NSString *location = [[NSUserDefaults standardUserDefaults] stringForKey:kLPSearchOptionLocation];
-    BOOL append = NO;
+    
+    NSString *keyword = [[NSUserDefaults standardUserDefaults] stringForKey:kLPSearchOptionKeywordKey];
+    NSString *petType = [[NSUserDefaults standardUserDefaults] stringForKey:kLPSearchOptionPetTypeKey];
+    NSString *location = [[NSUserDefaults standardUserDefaults] stringForKey:kLPSearchOptionLocationKey];
     
     NSMutableString *query = [[NSMutableString alloc] initWithCapacity:0];
     [query appendString:kLPPetQueryURL];
+    
+    BOOL append = NO;
     
     if (keyword) {
         append = YES;
@@ -241,105 +292,6 @@ NSString *const kLPLocalDomainClip = @"clip";
         [query appendFormat:@"&%@=%@", kLPPetQueryCursor, _currentQueryCursor];
     
     return [NSURL URLWithString:[query stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-}
-
-#pragma mark - Pet Clip Methods
-
-- (NSArray *)getClipPetDataSource
-{
-    NSArray *archivedObjects = [self loadAllObjectInDomain:kLPLocalDomainClip];
-    
-    if (!archivedObjects)
-        return nil;
-    
-    NSMutableArray *clipPetDataSouce = [NSMutableArray arrayWithCapacity:0];
-    
-    for (NSString *fileName in archivedObjects) {
-        [clipPetDataSouce addObject:[NSKeyedUnarchiver unarchiveObjectWithFile:[self makePathForFile:fileName domain:kLPLocalDomainClip]]];
-    }
-    
-    NSArray *sortedArray = [clipPetDataSouce sortedArrayUsingComparator:^(LPPetVO *firstVO, LPPetVO *secondVO) {
-        if ([firstVO.created doubleValue] > [secondVO.created doubleValue])
-            return (NSComparisonResult)NSOrderedAscending;
-        else if ([firstVO.created doubleValue] < [secondVO.created doubleValue])
-            return (NSComparisonResult)NSOrderedDescending;
-        else
-            return (NSComparisonResult)NSOrderedSame;
-    }];
-    
-    return sortedArray;
-}
-
-- (BOOL)isClipPetDataExist:(LPPetVO *)petVO
-{
-    if ([self getLocalArchivedObject:petVO.uuid domain:kLPLocalDomainClip])
-        return YES;
-    
-    return NO;
-}
-
-- (BOOL)setClipPetData:(LPPetVO *)petVO
-{
-    BOOL result = [self setLocalArchivedObject:petVO toFile:petVO.uuid domain:kLPLocalDomainClip];
-    [[NSNotificationCenter defaultCenter] postNotificationName:kLPNotificationClipPetListReset object:nil];
-    return result;
-}
-
-- (void)removeClipPetData:(LPPetVO *)petVO
-{
-    [self removeLocalArchivedObject:petVO.uuid domain:kLPLocalDomainClip];
-    [[NSNotificationCenter defaultCenter] postNotificationName:kLPNotificationClipPetListReset object:nil];
-}
-
-#pragma mark - NSKeyedArchiver Methods
-
-- (NSArray *)loadAllObjectInDomain:(NSString *)domain
-{
-    NSArray *pathArray = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
-    NSString *docDirectory = [pathArray objectAtIndex:0];
-    NSString *objectsPath = [NSString stringWithFormat:@"%@/%@/%@", docDirectory, kLPLocalRootPath, domain];
-    
-    NSError *error;
-    NSArray *objects = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:objectsPath error:&error];
-    
-    if (error) {
-        NSLog(@"%@", error);
-        return nil;
-    }
-    
-    return objects;
-}
-
-- (id)getLocalArchivedObject:(NSString *)fileName domain:(NSString *)domain
-{
-    return [NSKeyedUnarchiver unarchiveObjectWithFile:[self makePathForFile:fileName domain:domain]];
-}
-
-- (BOOL)setLocalArchivedObject:(id)object toFile:(NSString *)fileName domain:(NSString *)domain
-{
-    return [NSKeyedArchiver archiveRootObject:object toFile:[self makePathForFile:fileName domain:domain]];
-}
-
-- (void)removeLocalArchivedObject:(NSString *)fileName domain:(NSString *)domain
-{
-    [[NSFileManager defaultManager] removeItemAtPath:[self makePathForFile:fileName domain:domain] error:nil];
-}
-
-- (NSString *)makePathForFile:(NSString *)fileName domain:(NSString *)domain
-{
-    NSArray *pathArray = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
-    NSString *docDirectory = [pathArray objectAtIndex:0];
-    NSString *path = [NSString stringWithFormat:@"%@/%@/%@/%@", docDirectory, kLPLocalRootPath, domain, fileName];
-    [self makeDirectory:[path stringByDeletingLastPathComponent]];
-    return path;
-}
-
-- (void)makeDirectory:(NSString *)path
-{
-    if ([[NSFileManager defaultManager] fileExistsAtPath:path])
-        return;
-    
-    [[NSFileManager defaultManager] createDirectoryAtPath:path withIntermediateDirectories:YES attributes:nil error:NULL];
 }
 
 @end

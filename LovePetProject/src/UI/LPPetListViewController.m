@@ -7,8 +7,9 @@
 //
 
 #import "LPPetListViewController.h"
-#import "LPPetVO.h"
 #import "LPPetDAO.h"
+#import "LPLocalPetDAO.h"
+#import "LPPetVO.h"
 #import "LPPetListCell.h"
 #import "LPPetDetailViewController.h"
 #import "LPSearchViewController.h"
@@ -20,18 +21,16 @@
 #import "PSCollectionView.h"
 
 @interface LPPetListViewController ()
-@property (nonatomic, assign) kLPPetListViewMode mode;
 @property (nonatomic, strong) UIImageView *emptyBackground;
 @end
 
 @implementation LPPetListViewController
 
-- (id)initWithViewMode:(kLPPetListViewMode)mode
+- (id)initWithDAO:(id<LPPetDAO>)dao
 {
     self = [super init];
     if (self) {
-        self.petDAO = [LPPetDAO sharedInstance];
-        self.mode = mode;
+        self.petDAO = dao;
     }
     return self;
 }
@@ -43,23 +42,28 @@
 
 - (void)loadPetDataSource
 {
-    switch (self.mode) {
-        case kLPPetListViewModeRemote:
-            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(petListReset:) name:kLPNotificationPetListReset object:nil];
-            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(petListUpdateComplete:) name:kLPNotificationPetListUpdateComplete object:nil];
-            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(petListReturnZero:) name:kLPNotificationPetListReturnZero object:nil];
-            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(petListUpdateFail:) name:kLPNotificationPetListUpdateFail object:nil];
-            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(petListRequestFail:) name:kLPNotificationPetListRequestFail object:nil];
-            
-            [_petDAO resetRemotePetDataSource];
-            break;
-            
-        case kLPPetListViewModeClip:
-            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(clipPetListReset:) name:kLPNotificationClipPetListReset object:nil];
-            
-            [self clipPetListReset:nil];
-            break;
-    }
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(petListReset:)
+                                                 name:[_petDAO getNotiName:kLPPetDAONotiReset]
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(petListUpdateComplete:)
+                                                 name:[_petDAO getNotiName:kLPPetDAONotiUpdateComplete]
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(petListUpdateFail:)
+                                                 name:[_petDAO getNotiName:kLPPetDAONotiUpdateFail]
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(petListReturnZero:)
+                                                 name:[_petDAO getNotiName:kLPPetDAONotiReturnZero]
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(petListRequestFail:)
+                                                 name:[_petDAO getNotiName:kLPPetDAONotiRequestFail]
+                                               object:nil];
+    
+    [_petDAO resetPetDataSource];
 }
 
 - (void)viewDidLoad
@@ -88,13 +92,13 @@
 
 - (void)petListUpdateComplete:(NSNotification *)notification
 {
-    self.petDataSource = [_petDAO getRemotePetDataSource];
+    self.petDataSource = [_petDAO getPetDataSource];
     [self hideIndicator];
 }
 
 - (void)petListReturnZero:(NSNotification *)notification
 {
-    self.petDataSource = [_petDAO getRemotePetDataSource];
+    self.petDataSource = [_petDAO getPetDataSource];
     [self hideIndicator];
     
     if (_petDataSource.count == 0) {
@@ -117,12 +121,6 @@
     
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"알림" message:@"데이터를 가져오는데 실패했습니다! 네트워크를 확인해 주세요." delegate:self cancelButtonTitle:@"닫기" otherButtonTitles:nil];
     [alert show];
-}
-
-- (void)clipPetListReset:(NSNotification *)notification
-{
-    self.petDataSource = [_petDAO getClipPetDataSource];
-    [self hideIndicator];
 }
 
 #pragma mark - Acitivity Indicator Methods
@@ -174,16 +172,15 @@
 
 - (void)createPetSearchButton
 {
-    if (_mode == kLPPetListViewModeClip)
-        return;
-    
-    self.searchButton = [self createBarButtomItemToTarget:self action:@selector(actionSearchButton:) imageName:@"nav_button_search.png"];
-    [self.navigationItem setRightBarButtonItem:_searchButton];
+    if ([_petDAO respondsToSelector:@selector(getSearchOptionName:)]) {
+        self.searchButton = [self createBarButtomItemToTarget:self action:@selector(actionSearchButton:) imageName:@"nav_button_search.png"];
+        [self.navigationItem setRightBarButtonItem:_searchButton];
+    }
 }
 
 - (void)actionSearchButton:(id)sender
 {
-    LPSearchViewController *viewController = [[LPSearchViewController alloc] init];
+    LPSearchViewController *viewController = [[LPSearchViewController alloc] initWithDAO:_petDAO];
     [viewController.view setBackgroundColor:[UIColor whiteColor]];
     
     UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:viewController];
@@ -225,7 +222,7 @@
 
 - (void)createPullToRefresh
 {
-    if (_mode == kLPPetListViewModeClip)
+    if ([_petDAO conformsToProtocol:@protocol(LPLocalPetDAO)])
         return;
     
     self.refreshControl = [[ISRefreshControl alloc] init];
@@ -235,7 +232,7 @@
 
 - (void)pullToRefresh:(ISRefreshControl *)refreshControl
 {
-    [_petDAO resetRemotePetDataSource];
+    [_petDAO resetPetDataSource];
 }
 
 #pragma mark - PSCollectionViewDataSource
@@ -260,10 +257,12 @@
     [cell.dayLabel setText:vo.leftDay];
     [cell.detailLabel setText:vo.centerName];
     
-    if ([_petShowed containsObject:vo]) {
+    NSNumber *cellIndex = [NSNumber numberWithInteger:index];
+    
+    if ([_petShowed containsObject:cellIndex]) {
         [cell.photoView setImage:vo.thumbnail];
     } else {
-        [_petShowed addObject:vo];
+        [_petShowed addObject:cellIndex];
         [cell resetPhotoView:vo.thumbnail];
     }
     

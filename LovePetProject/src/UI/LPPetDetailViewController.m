@@ -9,7 +9,7 @@
 #import "LPPetDetailViewController.h"
 #import "LPDetailViewDetailCell.h"
 #import "LPDetailViewMapCell.h"
-#import "LPPetDAO.h"
+#import "LPClipPetDAO.h"
 #import "LPPetVO.h"
 
 #import "LPKeyDefines.h"
@@ -279,16 +279,16 @@ static NSString *MapCellIdentifer = @"MapCell";
 {
     NSString *message;
     
-    if ([[LPPetDAO sharedInstance] isClipPetDataExist:_petVO]) {
-        [[LPPetDAO sharedInstance] removeClipPetData:_petVO];
+    if ([[LPClipPetDAO sharedInstance] isLocalPetDataExist:_petVO]) {
+        [[LPClipPetDAO sharedInstance] removeLocalPetData:_petVO];
         message = @"관심목록에서 삭제하였습니다";
     } else {
-        [[LPPetDAO sharedInstance] setClipPetData:_petVO];
+        [[LPClipPetDAO sharedInstance] setLocalPetData:_petVO];
         message = @"관심목록에 추가하였습니다.";
     }
     
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"알림" message:message delegate:self cancelButtonTitle:@"닫기" otherButtonTitles:nil];
-    [alert show];
+//    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"알림" message:message delegate:self cancelButtonTitle:@"닫기" otherButtonTitles:nil];
+//    [alert show];
     
     [self resetClipButtonState];
 }
@@ -297,7 +297,7 @@ static NSString *MapCellIdentifer = @"MapCell";
 {
     UIButton *clipButton = (UIButton *)_tableView.tableFooterView;
     
-    if ([[LPPetDAO sharedInstance] isClipPetDataExist:_petVO]) {
+    if ([[LPClipPetDAO sharedInstance] isLocalPetDataExist:_petVO]) {
         [clipButton setTitle:@"관심목록에서 삭제하기" forState:UIControlStateNormal];
         [UIView animateWithDuration:0.5f
                          animations:^{

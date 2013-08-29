@@ -7,7 +7,6 @@
 //
 
 #import "LPSearchViewController.h"
-
 #import "LPPetDAO.h"
 
 NSString * const kLPNotificationSearchViewDismiss = @"searchView.dismiss";
@@ -16,11 +15,11 @@ NSInteger const kLPSearchViewHeight = 72 * 4;
 
 @implementation LPSearchViewController
 
-- (id)init
+- (id)initWithDAO:(id<LPPetDAO>)dao
 {
     self = [super init];
     if (self) {
-        self.petDAO = [LPPetDAO sharedInstance];
+        self.petDAO = dao;
     }
     return self;
 }
@@ -43,9 +42,9 @@ NSInteger const kLPSearchViewHeight = 72 * 4;
 
 - (void)loadSearchOptions
 {
-    self.searchKeyword = [[NSUserDefaults standardUserDefaults] stringForKey:kLPSearchOptionKeyword];
-    self.searchPetType = [[NSUserDefaults standardUserDefaults] stringForKey:kLPSearchOptionPetType];
-    self.searchLocation = [[NSUserDefaults standardUserDefaults] stringForKey:kLPSearchOptionLocation];
+    self.searchKeyword = [[NSUserDefaults standardUserDefaults] stringForKey:[_petDAO getSearchOptionName:kLPSearchOptionKeyword]];
+    self.searchPetType = [[NSUserDefaults standardUserDefaults] stringForKey:[_petDAO getSearchOptionName:kLPSearchOptionPetType]];
+    self.searchLocation = [[NSUserDefaults standardUserDefaults] stringForKey:[_petDAO getSearchOptionName:kLPSearchOptionLocation]];
 }
 
 #pragma mark - SearchField
@@ -124,23 +123,23 @@ NSInteger const kLPSearchViewHeight = 72 * 4;
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
     
     if (_searchField.text == nil)
-        [userDefaults removeObjectForKey:kLPSearchOptionKeyword];
+        [userDefaults removeObjectForKey:[_petDAO getSearchOptionName:kLPSearchOptionKeyword]];
     else
-        [userDefaults setObject:_searchField.text forKey:kLPSearchOptionKeyword];
+        [userDefaults setObject:_searchField.text forKey:[_petDAO getSearchOptionName:kLPSearchOptionKeyword]];
     
     if (_searchPetType == nil)
-        [userDefaults removeObjectForKey:kLPSearchOptionPetType];
+        [userDefaults removeObjectForKey:[_petDAO getSearchOptionName:kLPSearchOptionPetType]];
     else
-        [userDefaults setObject:_searchPetType forKey:kLPSearchOptionPetType];
+        [userDefaults setObject:_searchPetType forKey:[_petDAO getSearchOptionName:kLPSearchOptionPetType]];
     
     if (_searchLocation == nil)
-        [userDefaults removeObjectForKey:kLPSearchOptionLocation];
+        [userDefaults removeObjectForKey:[_petDAO getSearchOptionName:kLPSearchOptionLocation]];
     else
-        [userDefaults setObject:_searchLocation forKey:kLPSearchOptionLocation];
+        [userDefaults setObject:_searchLocation forKey:[_petDAO getSearchOptionName:kLPSearchOptionLocation]];
     
     [userDefaults synchronize];
     
-    [_petDAO resetRemotePetDataSource];
+    [_petDAO resetPetDataSource];
 }
 
 - (void)postSearchViewDismiss
@@ -218,13 +217,21 @@ NSInteger const kLPSearchViewHeight = 72 * 4;
 - (void)searchOptionViewController:(LPSearchOptionViewController *)controller didSelectOption:(NSInteger)index
 {
     NSString *value = [controller.dataSource objectAtIndex:index];
+    
     if (index == 0)
         value = nil;
     
-    if ([controller.searchOption isEqualToString:kLPSearchOptionPetType]) {
-        self.searchPetType = value;
-    } else if ([controller.searchOption isEqualToString:kLPSearchOptionLocation]) {
-        self.searchLocation = value;
+    switch (controller.searchOption) {
+        case kLPSearchOptionPetType:
+            self.searchPetType = value;
+            break;
+            
+        case kLPSearchOptionLocation:
+            self.searchLocation = value;
+            break;
+            
+        default:
+            break;
     }
     
     [_tableView reloadData];

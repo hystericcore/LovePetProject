@@ -35,6 +35,8 @@
 		D9AD3BFA17A7ED33000F46D1 /* LPPetListCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D9AD3BF917A7ED33000F46D1 /* LPPetListCell.m */; };
 		D9AD3C0017A7ED49000F46D1 /* PSCollectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = D9AD3BFD17A7ED49000F46D1 /* PSCollectionView.m */; };
 		D9AD3C0117A7ED49000F46D1 /* PSCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D9AD3BFF17A7ED49000F46D1 /* PSCollectionViewCell.m */; };
+		D9C2B35F17CF6CF600246332 /* LPPetDAOFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = D9C2B35E17CF6CF600246332 /* LPPetDAOFactory.m */; };
+		D9C2B36417CF755D00246332 /* LPClipPetDAO.m in Sources */ = {isa = PBXBuildFile; fileRef = D9C2B36317CF755D00246332 /* LPClipPetDAO.m */; };
 		D9CCD90217957799000621DE /* LPSearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D9CCD90117957799000621DE /* LPSearchViewController.m */; };
 		D9DE1C63178EFE8C00ADDC10 /* nav_button_list.png in Resources */ = {isa = PBXBuildFile; fileRef = D9DE1C62178EFE8C00ADDC10 /* nav_button_list.png */; };
 		D9DE1C66178F048100ADDC10 /* nav_button_search.png in Resources */ = {isa = PBXBuildFile; fileRef = D9DE1C64178F048100ADDC10 /* nav_button_search.png */; };
@@ -87,7 +89,7 @@
 		FB13A3FE17927DC900218055 /* AFXMLRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = FB13A3F417927DC900218055 /* AFXMLRequestOperation.m */; };
 		FB13A3FF17927DC900218055 /* UIImageView+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = FB13A3F617927DC900218055 /* UIImageView+AFNetworking.m */; };
 		FB13A4031792813C00218055 /* LPPetVO.m in Sources */ = {isa = PBXBuildFile; fileRef = FB13A4021792813C00218055 /* LPPetVO.m */; };
-		FB13A4061792B62B00218055 /* LPPetDAO.m in Sources */ = {isa = PBXBuildFile; fileRef = FB13A4051792B62B00218055 /* LPPetDAO.m */; };
+		FB13A4061792B62B00218055 /* LPLostPetDAO.m in Sources */ = {isa = PBXBuildFile; fileRef = FB13A4051792B62B00218055 /* LPLostPetDAO.m */; };
 		FB16EC2A17910B6F007A352C /* ISRefresgControlIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = FB16EC1C17910B6F007A352C /* ISRefresgControlIcon.png */; };
 		FB16EC2B17910B6F007A352C /* ISRefresgControlIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FB16EC1D17910B6F007A352C /* ISRefresgControlIcon@2x.png */; };
 		FB16EC2C17910B6F007A352C /* ISGumView.m in Sources */ = {isa = PBXBuildFile; fileRef = FB16EC1F17910B6F007A352C /* ISGumView.m */; };
@@ -175,6 +177,12 @@
 		D9AD3BFD17A7ED49000F46D1 /* PSCollectionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PSCollectionView.m; sourceTree = "<group>"; };
 		D9AD3BFE17A7ED49000F46D1 /* PSCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PSCollectionViewCell.h; sourceTree = "<group>"; };
 		D9AD3BFF17A7ED49000F46D1 /* PSCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PSCollectionViewCell.m; sourceTree = "<group>"; };
+		D9C2B35D17CF6CF600246332 /* LPPetDAOFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LPPetDAOFactory.h; sourceTree = "<group>"; };
+		D9C2B35E17CF6CF600246332 /* LPPetDAOFactory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPPetDAOFactory.m; sourceTree = "<group>"; };
+		D9C2B36017CF72DD00246332 /* LPPetDAO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LPPetDAO.h; sourceTree = "<group>"; };
+		D9C2B36217CF755D00246332 /* LPClipPetDAO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LPClipPetDAO.h; sourceTree = "<group>"; };
+		D9C2B36317CF755D00246332 /* LPClipPetDAO.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPClipPetDAO.m; sourceTree = "<group>"; };
+		D9C2B36517CF757A00246332 /* LPLocalPetDAO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LPLocalPetDAO.h; sourceTree = "<group>"; };
 		D9CCD90017957799000621DE /* LPSearchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LPSearchViewController.h; sourceTree = "<group>"; };
 		D9CCD90117957799000621DE /* LPSearchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPSearchViewController.m; sourceTree = "<group>"; };
 		D9DE1C62178EFE8C00ADDC10 /* nav_button_list.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = nav_button_list.png; sourceTree = "<group>"; };
@@ -267,8 +275,8 @@
 		FB13A3F617927DC900218055 /* UIImageView+AFNetworking.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+AFNetworking.m"; sourceTree = "<group>"; };
 		FB13A4011792813C00218055 /* LPPetVO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LPPetVO.h; sourceTree = "<group>"; };
 		FB13A4021792813C00218055 /* LPPetVO.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPPetVO.m; sourceTree = "<group>"; };
-		FB13A4041792B62B00218055 /* LPPetDAO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LPPetDAO.h; sourceTree = "<group>"; };
-		FB13A4051792B62B00218055 /* LPPetDAO.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPPetDAO.m; sourceTree = "<group>"; };
+		FB13A4041792B62B00218055 /* LPLostPetDAO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LPLostPetDAO.h; sourceTree = "<group>"; };
+		FB13A4051792B62B00218055 /* LPLostPetDAO.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPLostPetDAO.m; sourceTree = "<group>"; };
 		FB16EC1C17910B6F007A352C /* ISRefresgControlIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ISRefresgControlIcon.png; sourceTree = "<group>"; };
 		FB16EC1D17910B6F007A352C /* ISRefresgControlIcon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ISRefresgControlIcon@2x.png"; sourceTree = "<group>"; };
 		FB16EC1E17910B6F007A352C /* ISGumView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ISGumView.h; sourceTree = "<group>"; };
@@ -435,6 +443,17 @@
 			path = PSCollectionView;
 			sourceTree = "<group>";
 		};
+		D9C2B36117CF72F500246332 /* Implementation */ = {
+			isa = PBXGroup;
+			children = (
+				FB13A4041792B62B00218055 /* LPLostPetDAO.h */,
+				FB13A4051792B62B00218055 /* LPLostPetDAO.m */,
+				D9C2B36217CF755D00246332 /* LPClipPetDAO.h */,
+				D9C2B36317CF755D00246332 /* LPClipPetDAO.m */,
+			);
+			name = Implementation;
+			sourceTree = "<group>";
+		};
 		D9CCD903179577B5000621DE /* Search */ = {
 			isa = PBXGroup;
 			children = (
@@ -578,8 +597,11 @@
 			isa = PBXGroup;
 			children = (
 				FB13A4071792B63100218055 /* VO */,
-				FB13A4041792B62B00218055 /* LPPetDAO.h */,
-				FB13A4051792B62B00218055 /* LPPetDAO.m */,
+				D9C2B36117CF72F500246332 /* Implementation */,
+				D9C2B36017CF72DD00246332 /* LPPetDAO.h */,
+				D9C2B36517CF757A00246332 /* LPLocalPetDAO.h */,
+				D9C2B35D17CF6CF600246332 /* LPPetDAOFactory.h */,
+				D9C2B35E17CF6CF600246332 /* LPPetDAOFactory.m */,
 			);
 			path = DAO;
 			sourceTree = "<group>";
@@ -979,7 +1001,8 @@
 				FB9AE91C1788ABB60071DA68 /* LPLoginViewController.m in Sources */,
 				D9AD3C0017A7ED49000F46D1 /* PSCollectionView.m in Sources */,
 				FB13A3FB17927DC900218055 /* AFNetworkActivityIndicatorManager.m in Sources */,
-				FB13A4061792B62B00218055 /* LPPetDAO.m in Sources */,
+				D9C2B36417CF755D00246332 /* LPClipPetDAO.m in Sources */,
+				FB13A4061792B62B00218055 /* LPLostPetDAO.m in Sources */,
 				D9AD3BF717A7ED2A000F46D1 /* LPPetListViewController.m in Sources */,
 				FB16EC2D17910B6F007A352C /* ISRefreshControl.m in Sources */,
 				D93917B517AB4AD500850CE5 /* UIImageViewModeScaleAspect.m in Sources */,
@@ -989,6 +1012,7 @@
 				FB9AE8F517887AD30071DA68 /* LPPetDetailViewController.m in Sources */,
 				D95C95DC17AA975100486249 /* UIViewController+PKRevealController.m in Sources */,
 				FBC9744B1787CF2400915EB5 /* main.m in Sources */,
+				D9C2B35F17CF6CF600246332 /* LPPetDAOFactory.m in Sources */,
 				FB8CD9A81787E78F00D2ED21 /* TMQuiltViewController.m in Sources */,
 				D9F982B917BCAFA10085E50B /* LPGuideViewController.m in Sources */,
 				D9AD3BFA17A7ED33000F46D1 /* LPPetListCell.m in Sources */,

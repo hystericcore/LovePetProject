@@ -8,12 +8,13 @@
 
 #import <UIKit/UIKit.h>
 #import "LPSearchOptionViewController.h"
-@class LPPetDAO;
+@protocol LPPetDAO;
 extern NSString * const kLPNotificationSearchViewDismiss;
 extern NSInteger const kLPSearchViewCellHeight;
 extern NSInteger const kLPSearchViewHeight;
 @interface LPSearchViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, LPSearchOptionViewControllerDelegate>
-@property (nonatomic, strong) LPPetDAO *petDAO;
+- (id)initWithDAO:(id<LPPetDAO>)dao;
+@property (nonatomic, assign) id<LPPetDAO> petDAO;
 @property (nonatomic, strong) NSArray *dataSource;
 @property (nonatomic, strong) UITextField *searchField;
 @property (nonatomic, strong) UITableView *tableView;

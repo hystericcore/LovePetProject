@@ -2,37 +2,32 @@
 //  LPPetDAO.h
 //  LovePetProject
 //
-//  Created by HyunJoon Park on 13. 7. 14..
+//  Created by hyunjoon.park on 13. 8. 29..
 //  Copyright (c) 2013년 HyunJoon Park. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
-extern NSString *const kLPNotificationPetListReset;
-extern NSString *const kLPNotificationPetListUpdateComplete;
-extern NSString *const kLPNotificationPetListReturnZero;
-extern NSString *const kLPNotificationPetListUpdateFail;
-extern NSString *const kLPNotificationPetListRequestFail;
+typedef enum {
+    kLPPetDAONotiReset,
+    kLPPetDAONotiUpdateComplete,
+    kLPPetDAONotiUpdateFail,
+    kLPPetDAONotiReturnZero,
+    kLPPetDAONotiRequestFail,
+} kLPPetDAONoti;
 
-extern NSString *const kLPNotificationClipPetListReset;
+typedef enum {
+    kLPSearchOptionKeyword,
+    kLPSearchOptionPetType,
+    kLPSearchOptionLocation,
+} kLPSearchOption;
 
-extern NSString *const kLPPetKindCat;
-extern NSString *const kLPPetKindDog;
-
-extern NSString *const kLPSearchOptionKeyword;
-extern NSString *const kLPSearchOptionPetType;
-extern NSString *const kLPSearchOptionLocation;
-@class LPPetVO;
-@interface LPPetDAO : NSObject
+@protocol LPPetDAO <NSObject>
 + (instancetype)sharedInstance;
-@property (nonatomic, strong) NSString *currentQueryCursor;
-@property (nonatomic, assign) BOOL stopQuery;
-@property (nonatomic, strong) NSOperationQueue *operationQueue;
-- (void)resetRemotePetDataSource;
+- (NSString *)getNotiName:(kLPPetDAONoti)type;
+- (void)resetPetDataSource;
 - (void)requestNextPetList;
-- (NSArray *)getRemotePetDataSource;
-- (NSArray *)getSearchOptionValues:(NSString *)optionType;
-- (NSArray *)getClipPetDataSource;
-- (BOOL)isClipPetDataExist:(LPPetVO *)petVO;
-- (BOOL)setClipPetData:(LPPetVO *)petVO;
-- (void)removeClipPetData:(LPPetVO *)petVO;
+- (NSArray *)getPetDataSource;
+@optional
+- (NSString *)getSearchOptionName:(kLPSearchOption)option;
+- (NSArray *)getSearchOptionValues:(kLPSearchOption)option;
 @end

@@ -7,7 +7,7 @@
 //
 
 #import "LPAppDelegate.h"
-#import "LPPetDAO.h"
+#import "LPLostPetDAO.h"
 #import "LPPetListViewController.h"
 #import "LPLeftViewController.h"
 #import "LPGuideViewController.h"
@@ -23,7 +23,7 @@
     
     [self setUIAppearanceToWhite];
     
-    LPPetListViewController *petListController = [[LPPetListViewController alloc] initWithViewMode:kLPPetListViewModeRemote];
+    LPPetListViewController *petListController = [[LPPetListViewController alloc] initWithDAO:[LPLostPetDAO sharedInstance]];
     UINavigationController *frontViewController = [[UINavigationController alloc] initWithRootViewController:petListController];
     UIViewController *leftViewController = [[LPLeftViewController alloc] init];
     
@@ -43,7 +43,7 @@
     NSString *appVer = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
     NSString *currentVer = [[NSUserDefaults standardUserDefaults] objectForKey:kLPCurrentVersion];
     
-    NSLog(@"%@ %@", appVer, currentVer);
+    NSLog(@"appVer %@ %@", appVer, currentVer);
     
     if (currentVer == nil || [appVer isEqualToString:currentVer] != YES) {
         LPGuideViewController *viewController = [[LPGuideViewController alloc] init];
@@ -53,8 +53,6 @@
                                               
                                           }];
     }
-    
-//    [[NSUserDefaults standardUserDefaults] setObject:appVer forKey:kLPCurrentVersion];
 }
 
 - (void)setUIAppearanceToWhite

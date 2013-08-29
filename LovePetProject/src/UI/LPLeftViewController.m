@@ -12,12 +12,13 @@
 #import "LPPetListViewController.h"
 #import "LPLoginViewController.h"
 
+#import "LPPetDAOFactory.h"
+
 #import "UIView+Utils.h"
 
 typedef enum {
     kLPListViewController = 0,
     kLPClipViewController,
-    kLPLoginViewController,
 } kLPViewControllerType;
 
 NSInteger const kLPLeftViewCellHeight = 46;
@@ -105,11 +106,11 @@ NSInteger const kLPLeftViewCellHeight = 46;
     if (rootViewController == nil) {
         switch (index) {
             case kLPListViewController:
-                rootViewController = [[LPPetListViewController alloc] initWithViewMode:kLPPetListViewModeRemote];
+                rootViewController = [[LPPetListViewController alloc] initWithDAO:[LPPetDAOFactory petDAO:kLPPetDAOTypeLost]];
                 break;
                 
             case kLPClipViewController:
-                rootViewController = [[LPPetListViewController alloc] initWithViewMode:kLPPetListViewModeClip];
+                rootViewController = [[LPPetListViewController alloc] initWithDAO:[LPPetDAOFactory petDAO:kLPPetDAOTypeClip]];
                 break;
         }
     }
